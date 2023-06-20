@@ -14,7 +14,7 @@ const InputTextarea = ({
         <textarea
           type="text"
           className={clsx(
-            'w-full px-3 py-3 transition bg-white border rounded outline-none dark:bg-site-aside disabled:bg-gray-200 disabled:border-gray-200 dark:disabled:bg-graydark-200 dark:text-graydark-700',
+            'w-full px-3 py-3 transition bg-white border rounded outline-none dark:bg-site-aside disabled:bg-gray-200 disabled:border-gray-200 dark:disabled:bg-graydark-200 dark:text-graydark-700 block',
             className && className,
             errorMessageForce
               ? 'border-danger'

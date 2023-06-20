@@ -2,7 +2,7 @@ import { FloatingPortal } from '@floating-ui/react'
 import { Dialog } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { AnimatePresence, LayoutGroup, m } from 'framer-motion'
-import React, { useRef, useState } from 'react'
+import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -45,7 +45,7 @@ function PickerMember({ children, rowData }) {
   const { CrStocks } = useAuth()
   const [visible, setVisible] = useState(false)
   const queryClient = useQueryClient()
-  
+
   const { control, handleSubmit, reset, setValue } = useForm({
     defaultValues: rowData ? { ...rowData } : { ...initialValues, CurrentStockID: CrStocks?.ID || '' },
     resolver: yupResolver(SchemaAdd)
@@ -135,7 +135,10 @@ function PickerMember({ children, rowData }) {
         queryClient.invalidateQueries({ queryKey: ['ListTelesales'] }).then(() => {
           onHide()
           reset({ ...initialValues, CurrentStockID: CrStocks?.ID || '' })
-          window.top?.toastr && window.top?.toastr.success(values?.ID ? 'Lưu thay đổi thành công' : 'Thêm mới thành công.', '', { timeOut: 1500 })
+          window.top?.toastr &&
+            window.top?.toastr.success(values?.ID ? 'Lưu thay đổi thành công' : 'Thêm mới thành công.', '', {
+              timeOut: 1500
+            })
         })
       },
       onError: (error) => {
@@ -172,7 +175,10 @@ function PickerMember({ children, rowData }) {
                     animate={{ opacity: 1, top: 'auto' }}
                     exit={{ opacity: 0, top: '60%' }}
                   >
-                    <Dialog.Panel tabIndex={0} className='bg-white max-w-full w-[500px] max-h-full flex flex-col rounded shadow-lg'>
+                    <Dialog.Panel
+                      tabIndex={0}
+                      className='bg-white max-w-full w-[500px] max-h-full flex flex-col rounded shadow-lg'
+                    >
                       <Dialog.Title className='relative flex justify-between px-5 py-5 border-b border-light'>
                         <div className='text-2xl font-bold'>
                           {rowData?.ID ? 'Chỉnh sửa khách hàng' : 'Thêm mới khách hàng'}

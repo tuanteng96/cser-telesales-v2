@@ -1,8 +1,7 @@
-import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { LazyMotion, domAnimation } from 'framer-motion'
 
-function App(props) {
+function App() {
   return (
     <LazyMotion features={domAnimation}>
       <Outlet />

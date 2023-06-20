@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { AdjustmentsVerticalIcon } from '@heroicons/react/24/solid'
 import ReactBaseTable from 'src/app/_ezs/partials/table'
 import PickerMember from './components/PickerMember'
@@ -14,8 +14,12 @@ import StaffEdiTable from './components/StaffEdiTable'
 import StocksEdiTable from './components/StocksEdiTable'
 import StatusEdiTable from './components/StatusEdiTable'
 import NoteEdiTable from './components/NoteEdiTable'
+import PickerBooking from './components/PickerBooking'
+import Text from 'react-texty'
+import PickerCareHistory from './components/PickerCareHistory'
+import PickerReminder from './components/PickerReminder'
 
-function TelesalesPage(props) {
+function TelesalesPage() {
   const { pathname } = useLocation()
   const queryParams = useQueryParams()
   const navigate = useNavigate()
@@ -32,7 +36,7 @@ function TelesalesPage(props) {
     Tags: queryParams.Tags || ''
   }
 
-  const { data, isLoading, isPreviousData, refetch } = useQuery({
+  const { data, isLoading, isPreviousData } = useQuery({
     queryKey: ['ListTelesales', queryConfig],
     queryFn: () => {
       const newQueryConfig = {
@@ -78,6 +82,7 @@ function TelesalesPage(props) {
         ),
         width: 250,
         sortable: false,
+        headerClassName: '!px-[15px]',
         style: {
           padding: 0
         }
@@ -99,18 +104,44 @@ function TelesalesPage(props) {
         sortable: false
       },
       {
-        key: 'HistorySupport',
+        key: 'His',
         title: 'Lịch sử chăm sóc',
-        dataKey: 'HistorySupport',
+        dataKey: 'His',
+        cellRenderer: ({ rowData }) => (
+          <PickerCareHistory rowData={rowData}>
+            {({ open }) => (
+              <div className='w-full px-[15px] py-[12px] cursor-pointer text-muted' onClick={open}>
+                Thêm mới lịch sử
+              </div>
+            )}
+          </PickerCareHistory>
+        ),
         width: 280,
-        sortable: false
+        sortable: false,
+        style: {
+          padding: 0
+        },
+        headerClassName: '!px-[15px]'
       },
       {
-        key: 'ln',
+        key: 'Noti',
         title: 'Lịch nhắc',
-        dataKey: 'ln',
+        dataKey: 'Noti',
+        cellRenderer: ({ rowData }) => (
+          <PickerReminder>
+            {({ open }) => (
+              <div className='w-full px-[15px] py-[12px] cursor-pointer text-muted' onClick={open}>
+                Thêm mới lịch nhắc
+              </div>
+            )}
+          </PickerReminder>
+        ),
         width: 280,
-        sortable: false
+        sortable: false,
+        style: {
+          padding: 0
+        },
+        headerClassName: '!px-[15px]'
       },
       {
         key: 'User.FullName',
@@ -136,6 +167,35 @@ function TelesalesPage(props) {
         sortable: false
       },
       {
+        key: 'Book',
+        title: 'Lịch đặt gần nhất',
+        dataKey: 'Book',
+        cellRenderer: ({ rowData }) => (
+          <PickerBooking rowData={rowData} isAddMode={!(rowData?.Book?.ID > 0)}>
+            {({ open }) => (
+              <div className='w-full px-[15px] py-[12px] cursor-pointer' onClick={open}>
+                {rowData?.Book?.ID ? (
+                  <>
+                    <div>Ngày {moment(rowData?.Book?.BookDate).format('HH:mm DD-MM-YYYY')}</div>
+                    <Text tooltipMaxWidth={280} className='w-full truncate'>
+                      {rowData?.Book?.RootTitles || 'Chưa xác định'} - {rowData?.Book?.Stock?.Title || 'Chưa xác định'}
+                    </Text>
+                  </>
+                ) : (
+                  <span className='text-muted'>Đặt lịch mới</span>
+                )}
+              </div>
+            )}
+          </PickerBooking>
+        ),
+        width: 270,
+        sortable: false,
+        style: {
+          padding: 0
+        },
+        headerClassName: '!px-[15px]'
+      },
+      {
         key: '',
         title: '',
         dataKey: '',
@@ -144,9 +204,16 @@ function TelesalesPage(props) {
         frozen: 'right',
         cellRenderer: ({ rowData }) => (
           <div className='flex justify-center w-full'>
-            <button className='bg-success hover:bg-successhv text-white mx-[2px] text-sm rounded cursor-pointer px-4 py-3 transition'>
-              Đặt lịch
-            </button>
+            <PickerBooking rowData={rowData} isAddMode>
+              {({ open }) => (
+                <button
+                  className='bg-success hover:bg-successhv text-white mx-[2px] text-sm rounded cursor-pointer px-4 py-3 transition'
+                  onClick={open}
+                >
+                  Đặt lịch
+                </button>
+              )}
+            </PickerBooking>
           </div>
         )
       }

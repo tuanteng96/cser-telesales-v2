@@ -1,5 +1,5 @@
 import { useClick, useDismiss, useFloating, useInteractions } from '@floating-ui/react'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useMutation, useQueryClient } from 'react-query'
 import Text from 'react-texty'
 import TelesalesAPI from 'src/app/_ezs/api/telesales.api'
@@ -59,7 +59,7 @@ function NoteEdiTable({ initialValues }) {
     }
 
     addMutation.mutate(dataPost, {
-      onSuccess: (data) => {
+      onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['ListTelesales'] })
       },
       onError: (error) => {
