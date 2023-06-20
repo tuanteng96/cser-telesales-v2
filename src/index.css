@@ -1,0 +1,57 @@
+@import url('/src/app/_ezs/assets/plugin/react-select/react-select.css');
+@import url('/src/app/_ezs/assets/plugin/react-datepicker/react-datepicker.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+    --ezs-body-bg: #f5f8fa;
+    --ezs-body-color: #181C32;
+    --ezs-element-bg: #fff;
+}
+
+html.dark {
+    --ezs-body-bg: #151521;
+    --ezs-body-color: #FFFFFF;
+    --ezs-element-bg: #1b1b29;
+}
+
+/* Import */
+
+/* Root */
+
+html {
+    text-size-adjust: 100%;
+}
+
+html,
+body {
+    height: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: var(--ezs-body-color);
+    background: var(--ezs-body-bg);
+    font-size: 14px;
+}
+
+#root {
+    height: 100%;
+}
+
+[tabindex],
+*:focus-visible {
+    outline: none;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+    background: none;
+}
