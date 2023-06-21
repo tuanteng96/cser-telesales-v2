@@ -110,8 +110,17 @@ function TelesalesPage() {
         cellRenderer: ({ rowData }) => (
           <PickerCareHistory rowData={rowData}>
             {({ open }) => (
-              <div className='w-full px-[15px] py-[12px] cursor-pointer text-muted' onClick={open}>
-                Thêm mới lịch sử
+              <div className='w-full px-[15px] py-[12px] cursor-pointer' onClick={open}>
+                {rowData?.His?.List && rowData?.His?.List.length > 0 ? (
+                  <>
+                    <div className='mb-1'>{moment(rowData?.His?.List[0].CreateDate).format('HH:mm DD-MM-YYYY')}</div>
+                    <Text tooltipMaxWidth={280} className='w-full truncate'>
+                      {rowData?.His?.List[0].Content}
+                    </Text>
+                  </>
+                ) : (
+                  <div className='text-muted'>Thêm mới lịch sử</div>
+                )}
               </div>
             )}
           </PickerCareHistory>
@@ -128,10 +137,21 @@ function TelesalesPage() {
         title: 'Lịch nhắc',
         dataKey: 'Noti',
         cellRenderer: ({ rowData }) => (
-          <PickerReminder>
+          <PickerReminder rowData={rowData}>
             {({ open }) => (
-              <div className='w-full px-[15px] py-[12px] cursor-pointer text-muted' onClick={open}>
-                Thêm mới lịch nhắc
+              <div className='w-full px-[15px] py-[12px] cursor-pointer' onClick={open}>
+                {rowData?.Noti?.List && rowData?.Noti?.List.length > 0 ? (
+                  <>
+                    <div className='mb-1'>
+                      {moment(rowData?.Noti?.List[0].ReminderDate, 'DD-MM-YYYY').format('DD-MM-YYYY')}
+                    </div>
+                    <Text tooltipMaxWidth={280} className='w-full truncate'>
+                      {rowData?.Noti?.List[0].Content}
+                    </Text>
+                  </>
+                ) : (
+                  <div className='text-muted'>Thêm mới lịch nhắc</div>
+                )}
               </div>
             )}
           </PickerReminder>
@@ -176,7 +196,7 @@ function TelesalesPage() {
               <div className='w-full px-[15px] py-[12px] cursor-pointer' onClick={open}>
                 {rowData?.Book?.ID ? (
                   <>
-                    <div>Ngày {moment(rowData?.Book?.BookDate).format('HH:mm DD-MM-YYYY')}</div>
+                    <div>{moment(rowData?.Book?.BookDate).format('HH:mm DD-MM-YYYY')}</div>
                     <Text tooltipMaxWidth={280} className='w-full truncate'>
                       {rowData?.Book?.RootTitles || 'Chưa xác định'} - {rowData?.Book?.Stock?.Title || 'Chưa xác định'}
                     </Text>

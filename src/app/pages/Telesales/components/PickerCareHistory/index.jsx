@@ -2,7 +2,6 @@ import { FloatingPortal } from '@floating-ui/react'
 import { Dialog } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { AnimatePresence, LayoutGroup, m } from 'framer-motion'
-import moment from 'moment'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -10,6 +9,7 @@ import { useMutation, useQueryClient } from 'react-query'
 import TelesalesAPI from 'src/app/_ezs/api/telesales.api'
 import { Button } from 'src/app/_ezs/partials/button'
 import { InputTextarea } from 'src/app/_ezs/partials/forms'
+import ItemsCareHistory from './ItemsCareHistory'
 
 function PickerCareHistory({ children, rowData }) {
   const [Items, setItems] = useState([])
@@ -60,8 +60,6 @@ function PickerCareHistory({ children, rowData }) {
     })
   }
 
-  console.log(Items)
-
   return (
     <>
       {children({
@@ -81,7 +79,7 @@ function PickerCareHistory({ children, rowData }) {
                 ></m.div>
                 <div className='fixed inset-0 flex items-center justify-center z-[1003]' autoComplete='off'>
                   <m.div
-                    className='absolute flex flex-col justify-center h-full top-0 right-0'
+                    className='absolute top-0 right-0 flex flex-col justify-center h-full'
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 10 }}
@@ -89,7 +87,12 @@ function PickerCareHistory({ children, rowData }) {
                   >
                     <Dialog.Panel tabIndex={0} className='bg-white max-w-full w-[450px] h-full flex flex-col shadow-lg'>
                       <Dialog.Title className='relative flex justify-between px-5 py-5 border-b border-light'>
-                        <div className='text-2xl font-bold'>Lịch sử chăm sóc</div>
+                        <div>
+                          <div className='text-2xl font-bold'>Lịch sử chăm sóc</div>
+                          <div className='mt-px font-medium'>
+                            {rowData?.FullName} - {rowData?.Phone}
+                          </div>
+                        </div>
                         <div
                           className='absolute flex items-center justify-center w-12 h-12 cursor-pointer right-2 top-2/4 -translate-y-2/4'
                           onClick={onHide}
@@ -120,16 +123,11 @@ function PickerCareHistory({ children, rowData }) {
                           </div>
                         </form>
                       </div>
-                      <div className='overflow-auto grow p-5'>
-                        {Items.map((item, index) => (
-                          <div
-                            className='bg-[#F3F6F9] hover:bg-[#EBEDF3] last:mb-0 mb-5 rounded p-5 cursor-pointer transition'
-                            key={index}
-                          >
-                            <div className='mb-1.5'>{moment(item.CreateDate).format('HH:mm DD-MM-YYYY')}</div>
-                            <div>{item.Content}</div>
-                          </div>
-                        ))}
+                      <div className='p-5 overflow-auto grow'>
+                        {Items &&
+                          Items.map((item, index) => (
+                            <ItemsCareHistory {...{ item, rowData, Items, index }} key={index} />
+                          ))}
                       </div>
                     </Dialog.Panel>
                   </m.div>
