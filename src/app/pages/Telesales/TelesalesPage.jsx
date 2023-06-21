@@ -18,6 +18,7 @@ import PickerBooking from './components/PickerBooking'
 import Text from 'react-texty'
 import PickerCareHistory from './components/PickerCareHistory'
 import PickerReminder from './components/PickerReminder'
+import SidebarFilter from './components/SidebarFilter'
 
 function TelesalesPage() {
   const { pathname } = useLocation()
@@ -143,7 +144,8 @@ function TelesalesPage() {
                 {rowData?.Noti?.List && rowData?.Noti?.List.length > 0 ? (
                   <>
                     <div className='mb-1'>
-                      {moment(rowData?.Noti?.List[0].ReminderDate, 'DD-MM-YYYY').format('DD-MM-YYYY')}
+                      {moment(rowData?.Noti?.List[0].ReminderDate, 'HH:mm DD-MM-YYYY').format('HH:mm DD-MM-YYYY')}
+                      {rowData?.Noti?.List[0].isReminded && <span className='text-success pl-1'>- Đã nhắc</span>}
                     </div>
                     <Text tooltipMaxWidth={280} className='w-full truncate'>
                       {rowData?.Noti?.List[0].Content}
@@ -243,64 +245,67 @@ function TelesalesPage() {
   )
 
   return (
-    <div className='flex flex-col h-full p-4'>
-      <div className='flex items-center justify-between mb-4'>
-        <div className='text-2xl font-bold'>Danh sách khách hàng</div>
-        <div className='flex'>
-          <PickerFilters defaultValues={queryConfig}>
-            {({ open }) => (
-              <button
-                onClick={open}
-                type='button'
-                className='border rounded transition hover:border-black bg-white border-[#d5d7da] h-12 flex items-center justify-center px-3'
-              >
-                Bộ lọc
-                <AdjustmentsVerticalIcon className='w-6 ml-1.5' />
-              </button>
-            )}
-          </PickerFilters>
+    <div className='h-full flex'>
+      <SidebarFilter defaultValues={queryConfig} />
+      <div className='flex-1 flex flex-col h-full p-4'>
+        <div className='flex items-center justify-between mb-4'>
+          <div className='text-2xl font-bold'>Danh sách khách hàng</div>
+          <div className='flex'>
+            <PickerFilters defaultValues={queryConfig}>
+              {({ open }) => (
+                <button
+                  onClick={open}
+                  type='button'
+                  className='border rounded transition hover:border-black bg-white border-[#d5d7da] h-12 flex items-center justify-center px-3 lg:hidden'
+                >
+                  <span className='hidden md:inline-block pr-1.5'>Bộ lọc</span>
+                  <AdjustmentsVerticalIcon className='w-6' />
+                </button>
+              )}
+            </PickerFilters>
 
-          <PickerMember>
-            {({ open }) => (
-              <button
-                onClick={open}
-                type='button'
-                className='flex items-center justify-center h-12 px-5 ml-2 text-white transition border rounded bg-primary border-primary hover:bg-primaryhv hover:border-primaryhv'
-              >
-                Thêm mới khách
-              </button>
-            )}
-          </PickerMember>
+            <PickerMember>
+              {({ open }) => (
+                <button
+                  onClick={open}
+                  type='button'
+                  className='flex items-center justify-center h-12 px-5 ml-2 text-white transition border rounded bg-primary border-primary hover:bg-primaryhv hover:border-primaryhv'
+                >
+                  Thêm mới
+                </button>
+              )}
+            </PickerMember>
+          </div>
         </div>
+        <ReactBaseTable
+          pagination
+          wrapClassName='grow'
+          rowKey='ID'
+          columns={columns}
+          data={data?.data?.list || []}
+          estimatedRowHeight={96}
+          isPreviousData={isPreviousData}
+          loading={isLoading || isPreviousData}
+          pageCount={data?.data?.pcount}
+          pageOffset={Number(queryConfig.pi)}
+          pageSizes={Number(queryConfig.ps)}
+          onChange={({ pageIndex, pageSize }) =>
+            navigate({
+              pathname: pathname,
+              search: createSearchParams(
+                pickBy(
+                  {
+                    ...queryConfig,
+                    pi: pageIndex,
+                    ps: pageSize
+                  },
+                  (v) => v
+                )
+              ).toString()
+            })
+          }
+        />
       </div>
-      <ReactBaseTable
-        pagination
-        wrapClassName='grow'
-        rowKey='ID'
-        columns={columns}
-        data={data?.data?.list || []}
-        estimatedRowHeight={96}
-        isPreviousData={isPreviousData}
-        loading={isLoading || isPreviousData}
-        pageCount={data?.data?.pcount}
-        pageOffset={Number(queryConfig.pi)}
-        pageSizes={Number(queryConfig.ps)}
-        onChange={({ pageIndex, pageSize }) =>
-          navigate({
-            pathname: pathname,
-            search: createSearchParams(
-              pickBy(
-                {
-                  ...queryConfig,
-                  pi: pageIndex,
-                  ps: pageSize
-                },
-                (v) => v
-              )
-            ).toString()
-          })
-        }
-      />
     </div>
   )
 }

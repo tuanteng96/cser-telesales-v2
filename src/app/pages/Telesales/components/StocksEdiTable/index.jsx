@@ -1,19 +1,23 @@
 import { useClick, useDismiss, useFloating, useInteractions } from '@floating-ui/react'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation, useQueryClient } from 'react-query'
 import Text from 'react-texty'
 import TelesalesAPI from 'src/app/_ezs/api/telesales.api'
+import { useRoles } from 'src/app/_ezs/hooks/useRoles'
 import { SelectStocks } from 'src/app/_ezs/partials/select'
 
 function StocksEdiTable({ initialValues }) {
   const [value, setValue] = useState('')
   const [isOpen, setIsOpen] = useState(false)
 
+  const { page_tele_basic, page_tele_adv } = useRoles(['page_tele_basic', 'page_tele_adv'])
+
   const queryClient = useQueryClient()
 
   useEffect(() => {
     setValue(initialValues?.CurrentStockID || '')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
 
   const { refs, context } = useFloating({
@@ -74,6 +78,7 @@ function StocksEdiTable({ initialValues }) {
             className='w-full select-control'
             value={value}
             onChange={onChange}
+            StockRoles={page_tele_adv?.hasRight ? page_tele_adv?.StockRoles : page_tele_basic.StockRoles}
           />
         </div>
       )}

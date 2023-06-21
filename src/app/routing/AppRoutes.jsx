@@ -10,6 +10,7 @@ export default function AppRoutes() {
       <Routes>
         <Route element={<App />}>
           <Route path='/*' element={<PrivateRoutes />} />
+          <Route path='/Admin/PageTele/index.html' element={<Navigate to='/' replace />} />
           <Route index element={<Navigate to='/telesales' />} />
         </Route>
       </Routes>

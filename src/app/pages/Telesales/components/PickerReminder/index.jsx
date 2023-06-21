@@ -16,7 +16,8 @@ import ItemsReminder from './ItemsReminder'
 
 const SchemaAdd = yup
   .object({
-    ReminderDate: yup.string().required('Vui lòng chọn ngày nhắc')
+    ReminderDate: yup.string().required('Vui lòng chọn ngày nhắc'),
+    Content: yup.string().required('Vui lòng nhập nội dung')
   })
   .required()
 
@@ -42,6 +43,7 @@ function PickerReminder({ children, rowData }) {
   useEffect(() => {
     reset()
     clearErrors()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible])
 
   const addMutation = useMutation({
@@ -54,7 +56,7 @@ function PickerReminder({ children, rowData }) {
     const item = {
       CreateDate: new Date(),
       Content: Content,
-      ReminderDate: moment(ReminderDate).format('DD-MM-YYYY'),
+      ReminderDate: moment(ReminderDate).format('HH:mm DD-MM-YYYY'),
       isReminded
     }
     let dataPost = {
@@ -129,12 +131,14 @@ function PickerReminder({ children, rowData }) {
                               control={control}
                               render={({ field: { ref, ...field }, fieldState }) => (
                                 <InputDatePicker
-                                  placeholderText='Ngày nhắc lịch'
+                                  placeholderText='Ngày thời gian nhắc lịch'
                                   autoComplete='off'
                                   onChange={field.onChange}
                                   selected={field.value ? new Date(field.value) : null}
                                   {...field}
-                                  dateFormat='dd/MM/yyyy'
+                                  dateFormat='HH:mm dd/MM/yyyy'
+                                  showTimeSelect
+                                  timeFormat='HH:mm'
                                   errorMessageForce={fieldState?.invalid}
                                 />
                               )}
@@ -145,7 +149,12 @@ function PickerReminder({ children, rowData }) {
                               name='Content'
                               control={control}
                               render={({ field: { ref, ...field }, fieldState }) => (
-                                <InputTextarea rows={3} placeholder='Nhập nội dung' {...field} />
+                                <InputTextarea
+                                  rows={3}
+                                  placeholder='Nhập nội dung'
+                                  {...field}
+                                  errorMessageForce={fieldState?.invalid}
+                                />
                               )}
                             />
                           </div>

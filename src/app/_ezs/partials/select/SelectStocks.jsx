@@ -2,7 +2,7 @@ import React from 'react'
 import Select from 'react-select'
 import { useAuth } from '../../core/Auth'
 
-const SelectStocks = ({ value, isMulti, ...props }) => {
+const SelectStocks = ({ value, isMulti, StockRoles, ...props }) => {
   const { Stocks } = useAuth()
 
   return (
@@ -22,7 +22,7 @@ const SelectStocks = ({ value, isMulti, ...props }) => {
         }}
         menuPortalTarget={document.body}
         classNamePrefix='select'
-        options={Stocks}
+        options={StockRoles || Stocks}
         placeholder='Chọn cơ sở'
         noOptionsMessage={() => 'Không có dữ liệu'}
         {...props}

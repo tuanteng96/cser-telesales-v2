@@ -36,8 +36,8 @@ function SelectService({ isMulti, value, loading, disabled, MemberID = '', Stock
             ? data?.filter((x) => value && value.some((k) => k === x.value))
             : data?.filter((x) => x.value === value)
         }
-        placeholder='Chọn nhân viên'
-        noOptionsMessage={() => 'Không có nhân viên'}
+        placeholder='Chọn dịch vụ'
+        noOptionsMessage={() => 'Không có dịch vụ'}
         {...props}
       />
     </>

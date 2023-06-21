@@ -8,13 +8,16 @@ import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { createSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from 'src/app/_ezs/core/Auth'
+import { useRoles } from 'src/app/_ezs/hooks/useRoles'
 import { Button } from 'src/app/_ezs/partials/button'
 import { Input } from 'src/app/_ezs/partials/forms'
 import { InputDatePicker } from 'src/app/_ezs/partials/forms/input/InputDatePicker'
 import { SelectStaffs, SelectStatusTelesale, SelectStocks } from 'src/app/_ezs/partials/select'
 
 function PickerFilters({ children, defaultValues }) {
-  const { CrStocks } = useAuth()
+  const { CrStocks, auth } = useAuth()
+  const { page_tele_basic, page_tele_adv } = useRoles(['page_tele_basic', 'page_tele_adv'])
+
   const { pathname } = useLocation()
   const navigate = useNavigate()
 
@@ -34,9 +37,13 @@ function PickerFilters({ children, defaultValues }) {
   const onSubmit = async (values) => {
     const newQueryConfig = {
       ...values,
-      CurrentUserID: values?.CurrentUserID?.value || '',
+      CurrentUserID: page_tele_adv.hasRight ? values?.CurrentUserID?.value || '' : auth.ID,
       From: values.From ? moment(values.From).format('YYYY-MM-DD') : '',
-      To: values.From ? moment(values.To).format('YYYY-MM-DD') : '',
+      To: values.To ? moment(values.To).format('YYYY-MM-DD') : '',
+      BookFrom: values.BookFrom ? moment(values.BookFrom).format('YYYY-MM-DD') : '',
+      BookTo: values.BookTo ? moment(values.BookTo).format('YYYY-MM-DD') : '',
+      ReminderFrom: values.ReminderFrom ? moment(values.ReminderFrom).format('YYYY-MM-DD') : '',
+      ReminderTo: values.ReminderTo ? moment(values.ReminderTo).format('YYYY-MM-DD') : '',
       StockID: values?.StockID || '',
       Tags: values.Tags ? values?.Tags.join(',') : ''
     }
@@ -135,7 +142,6 @@ function PickerFilters({ children, defaultValues }) {
                                 control={control}
                                 render={({ field: { ref, ...field }, fieldState }) => (
                                   <InputDatePicker
-                                    tabIndex={0}
                                     placeholderText='Chọn ngày'
                                     autoComplete='off'
                                     onChange={field.onChange}
@@ -166,23 +172,26 @@ function PickerFilters({ children, defaultValues }) {
                             />
                           </div>
                         </div>
-                        <div className='mb-3.5'>
-                          <div className='font-light'>Nhân viên phụ trách</div>
-                          <div className='mt-1'>
-                            <Controller
-                              name='CurrentUserID'
-                              control={control}
-                              render={({ field: { ref, ...field }, fieldState }) => (
-                                <SelectStaffs
-                                  isClearable
-                                  className='select-control'
-                                  value={field.value}
-                                  onChange={(val) => field.onChange(val?.value || '')}
-                                />
-                              )}
-                            />
+                        {page_tele_adv.hasRight && (
+                          <div className='mb-3.5'>
+                            <div className='font-light'>Nhân viên phụ trách</div>
+                            <div className='mt-1'>
+                              <Controller
+                                name='CurrentUserID'
+                                control={control}
+                                render={({ field: { ref, ...field }, fieldState }) => (
+                                  <SelectStaffs
+                                    isClearable
+                                    className='select-control'
+                                    value={field.value}
+                                    onChange={(val) => field.onChange(val?.value || '')}
+                                  />
+                                )}
+                              />
+                            </div>
                           </div>
-                        </div>
+                        )}
+
                         <div className='mb-3.5'>
                           <div className='font-light'>Cơ sở</div>
                           <div className='mt-1'>
@@ -195,12 +204,15 @@ function PickerFilters({ children, defaultValues }) {
                                   className='select-control'
                                   value={field.value}
                                   onChange={(val) => field.onChange(val?.value || '')}
+                                  StockRoles={
+                                    page_tele_adv?.hasRight ? page_tele_adv?.StockRoles : page_tele_basic.StockRoles
+                                  }
                                 />
                               )}
                             />
                           </div>
                         </div>
-                        <div>
+                        <div className='mb-3.5'>
                           <div className='font-light'>Trạng thái</div>
                           <div className='mt-1'>
                             <Controller
@@ -215,6 +227,86 @@ function PickerFilters({ children, defaultValues }) {
                                 />
                               )}
                             />
+                          </div>
+                        </div>
+                        <div className='mb-3.5 grid gap-4 grid-cols-2'>
+                          <div>
+                            <div className='font-light'>Đăt lịch từ ngày</div>
+                            <div className='mt-1'>
+                              <Controller
+                                name='BookFrom'
+                                control={control}
+                                render={({ field: { ref, ...field }, fieldState }) => (
+                                  <InputDatePicker
+                                    placeholderText='Chọn ngày'
+                                    autoComplete='off'
+                                    onChange={field.onChange}
+                                    selected={field.value ? new Date(field.value) : null}
+                                    {...field}
+                                    dateFormat='dd/MM/yyyy'
+                                  />
+                                )}
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <div className='font-light'>Đăt lịch đến ngày</div>
+                            <div className='mt-1'>
+                              <Controller
+                                name='BookTo'
+                                control={control}
+                                render={({ field: { ref, ...field }, fieldState }) => (
+                                  <InputDatePicker
+                                    placeholderText='Chọn ngày'
+                                    autoComplete='off'
+                                    onChange={field.onChange}
+                                    selected={field.value ? new Date(field.value) : null}
+                                    {...field}
+                                    dateFormat='dd/MM/yyyy'
+                                  />
+                                )}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className='grid gap-4 grid-cols-2'>
+                          <div>
+                            <div className='font-light'>Lịch nhắc từ ngày</div>
+                            <div className='mt-1'>
+                              <Controller
+                                name='ReminderFrom'
+                                control={control}
+                                render={({ field: { ref, ...field }, fieldState }) => (
+                                  <InputDatePicker
+                                    placeholderText='Chọn ngày'
+                                    autoComplete='off'
+                                    onChange={field.onChange}
+                                    selected={field.value ? new Date(field.value) : null}
+                                    {...field}
+                                    dateFormat='dd/MM/yyyy'
+                                  />
+                                )}
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <div className='font-light'>Lịch nhắc đến ngày</div>
+                            <div className='mt-1'>
+                              <Controller
+                                name='ReminderTo'
+                                control={control}
+                                render={({ field: { ref, ...field }, fieldState }) => (
+                                  <InputDatePicker
+                                    placeholderText='Chọn ngày'
+                                    autoComplete='off'
+                                    onChange={field.onChange}
+                                    selected={field.value ? new Date(field.value) : null}
+                                    {...field}
+                                    dateFormat='dd/MM/yyyy'
+                                  />
+                                )}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>

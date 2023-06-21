@@ -1,9 +1,9 @@
-import React from 'react'
 import Select from 'react-select'
 import StaffsAPI from '../../api/staffs.api'
 import { useQuery } from 'react-query'
 
-const SelectStaffs = ({ isMulti, value, loading, disabled, ...props }) => {
+const SelectStaffs = ({ isMulti, value, loading, disabled, StockRoles, ...props }) => {
+  console.log(StockRoles)
   const { data, isLoading } = useQuery({
     queryKey: ['ListStaffs'],
     queryFn: async () => {
@@ -38,6 +38,11 @@ const SelectStaffs = ({ isMulti, value, loading, disabled, ...props }) => {
           }
         }
       }
+
+      if (StockRoles && StockRoles.length > 0) {
+        newData = newData.filter((x) => StockRoles.some((s) => s.value === x.groupid))
+      }
+
       return {
         nested: newData || [],
         list: Items || []

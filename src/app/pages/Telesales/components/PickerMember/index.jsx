@@ -13,6 +13,7 @@ import { SelectStatusTelesale, SelectStocks } from 'src/app/_ezs/partials/select
 import { useMutation, useQueryClient } from 'react-query'
 import MemberAPI from 'src/app/_ezs/api/member.api'
 import TelesalesAPI from 'src/app/_ezs/api/telesales.api'
+import { useRoles } from 'src/app/_ezs/hooks/useRoles'
 
 const SchemaAdd = yup
   .object({
@@ -46,6 +47,8 @@ function PickerMember({ children, rowData }) {
   const [visible, setVisible] = useState(false)
   const queryClient = useQueryClient()
 
+  const { page_tele_basic, page_tele_adv } = useRoles(['page_tele_basic', 'page_tele_adv'])
+
   const { control, handleSubmit, reset, setValue } = useForm({
     defaultValues: rowData ? { ...rowData } : { ...initialValues, CurrentStockID: CrStocks?.ID || '' },
     resolver: yupResolver(SchemaAdd)
@@ -68,7 +71,7 @@ function PickerMember({ children, rowData }) {
       { Key: value },
       {
         onSuccess: ({ data }) => {
-          if (data?.data && data?.data.length === 1) {
+          if (data?.data && data?.data.length === 1 && data?.data.some((x) => x.suffix === value)) {
             reset({
               ID: 0,
               FullName: data?.data[0].text,
@@ -245,6 +248,9 @@ function PickerMember({ children, rowData }) {
                                   className='select-control'
                                   value={field.value}
                                   onChange={(val) => field.onChange(val?.value || '')}
+                                  StockRoles={
+                                    page_tele_adv?.hasRight ? page_tele_adv?.StockRoles : page_tele_basic.StockRoles
+                                  }
                                 />
                               )}
                             />

@@ -1,6 +1,6 @@
 import { TrashIcon } from '@heroicons/react/24/outline'
+import clsx from 'clsx'
 import moment from 'moment'
-import React from 'react'
 import { useMutation, useQueryClient } from 'react-query'
 import TelesalesAPI from 'src/app/_ezs/api/telesales.api'
 
@@ -11,16 +11,20 @@ function ItemsReminder({ item, index, rowData }) {
     mutationFn: (data) => TelesalesAPI.addMember(data)
   })
 
+  const updateMutation = useMutation({
+    mutationFn: (data) => TelesalesAPI.addMember(data)
+  })
+
   const onDelete = () => {
-    let newHis = [...rowData?.His?.List]
-    newHis.splice(index, 1)
+    let newNoti = [...rowData?.Noti?.List]
+    newNoti.splice(index, 1)
     let dataPost = {
       edit: [
         {
           ...rowData,
-          His: {
-            ...rowData?.His,
-            List: newHis
+          Noti: {
+            ...rowData?.Noti,
+            List: newNoti
           }
         }
       ]
@@ -35,11 +39,65 @@ function ItemsReminder({ item, index, rowData }) {
       }
     })
   }
+
+  const onUpdate = () => {
+    let newNoti = [...rowData?.Noti?.List]
+    if (index < 0) return
+
+    newNoti[index].isReminded = !newNoti[index].isReminded
+
+    let dataPost = {
+      edit: [
+        {
+          ...rowData,
+          Noti: {
+            ...rowData?.Noti,
+            List: newNoti
+          }
+        }
+      ]
+    }
+
+    updateMutation.mutate(dataPost, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['ListTelesales'] })
+      },
+      onError: (error) => {
+        console.log(error)
+      }
+    })
+  }
+
   return (
-    <div className='bg-[#F3F6F9] hover:bg-[#EBEDF3] last:mb-0 mb-5 rounded p-5 cursor-pointer transition relative'>
-      <div className='mb-2'>{moment(item.CreateDate).format('HH:mm DD-MM-YYYY')}</div>
-      <div>{item.Content}</div>
+    <div
+      className={clsx(
+        'font-medium last:mb-0 mb-5 rounded p-5 cursor-pointer transition relative',
+        item.isReminded ? 'bg-[#C9F7F5] text-success' : 'bg-[#FFE2E5] text-danger'
+      )}
+    >
+      <div className='mb-2'>
+        <span className='pr-1'>Ngày nhắc</span>
+        {moment(item.ReminderDate, 'HH:mm DD-MM-YYYY').format('HH:mm DD-MM-YYYY')}
+      </div>
+      <div className='mb-3.5'>{item.Content}</div>
+      <div className='flex justify-between items-center'>
+        <div className='text-[13px]'>{moment(item.CreateDate).format('HH:mm DD-MM-YYYY')}</div>
+        <button
+          disabled={updateMutation.isLoading}
+          className={clsx(
+            'text-white px-2.5 py-1 rounded font-normal text-[13px]',
+            item.isReminded ? 'bg-danger' : 'bg-success'
+          )}
+          type='button'
+          onClick={onUpdate}
+        >
+          {updateMutation.isLoading && 'Đang thực hiện ...'}
+          {!updateMutation.isLoading && <>{item.isReminded ? 'Bỏ đã nhắc lịch' : 'Thực hiện nhắc lịch'}</>}
+        </button>
+      </div>
+
       <button
+        type='button'
         disabled={addMutation.isLoading}
         className='absolute flex items-center justify-center bg-white rounded-full shadow-3xl -top-2.5 -right-2.5 w-11 h-11 text-danger'
         onClick={onDelete}

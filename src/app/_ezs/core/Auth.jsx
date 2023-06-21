@@ -39,13 +39,85 @@ window.top.Info = {
       ParentID: 778
     }
   ],
+  rightTree: {
+    groups: [
+      {
+        group: 'Phần mềm',
+        rights: [
+          {
+            IsAllStock: true,
+            hasRight: true,
+            name: 'tele',
+            subs: [
+              {
+                IsAllStock: true,
+                hasRight: true,
+                name: 'page_tele_basic',
+                stocks: '',
+                stocksList: [
+                  {
+                    Title: 'Cser Hà Nội',
+                    ID: 8975,
+                    ParentID: 778
+                  },
+                  {
+                    Title: 'Cser Hồ Chí Minh',
+                    ID: 10053,
+                    ParentID: 778
+                  }
+                  // {
+                  //   Title: 'Cser Tuyên Quang',
+                  //   ID: 11210,
+                  //   ParentID: 778
+                  // },
+                  // {
+                  //   Title: 'CSER NAM HỘI AN',
+                  //   ID: 11226,
+                  //   ParentID: 778
+                  // }
+                ]
+              },
+              {
+                IsAllStock: true,
+                hasRight: true,
+                name: 'page_tele_adv',
+                stocks: '',
+                stocksList: [
+                  {
+                    Title: 'Cser Hà Nội',
+                    ID: 8975,
+                    ParentID: 778
+                  },
+                  {
+                    Title: 'Cser Hồ Chí Minh',
+                    ID: 10053,
+                    ParentID: 778
+                  },
+                  {
+                    Title: 'Cser Tuyên Quang',
+                    ID: 11210,
+                    ParentID: 778
+                  },
+                  {
+                    Title: 'CSER NAM HỘI AN',
+                    ID: 11226,
+                    ParentID: 778
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
   CrStockID: 8975,
   token:
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEwMzExNDEwMzUyMSIsIm5iZiI6MTY4NzIyOTgyMCwiZXhwIjoxNjg3ODM0NjIwLCJpYXQiOjE2ODcyMjk4MjB9.WOQX6eJQ3dhLLplZlBSZni5u9rT2olQuS38Z8Rpd730'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEwMzExNDEwMzUyOSIsIm5iZiI6MTY4NzMxODk0OSwiZXhwIjoxNjg3OTIzNzQ5LCJpYXQiOjE2ODczMTg5NDl9.QFv2Hjgp7CTyJyH62-kuNuKu_ijtunVf-HHuojtpNj8'
 }
 
 const getInfoLocalStorage = () => {
-  return new Promise(function (resolve, reject) {
+  return new Promise(function (resolve) {
     function getInfo() {
       if (window.top.Info) {
         resolve({
@@ -53,7 +125,7 @@ const getInfoLocalStorage = () => {
         })
       } else {
         setTimeout(() => {
-          checkInfo(fn)
+          getInfo()
         }, 50)
       }
     }
@@ -66,8 +138,9 @@ const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(null)
   const [CrStocks, setCrStocks] = useState(null)
   const [Stocks, setStocks] = useState(null)
+  const [RightTree, setRightTree] = useState(null)
 
-  const saveAuth = ({ CrStockID, token, User, ...values }) => {
+  const saveAuth = ({ CrStockID, token, User, rightTree, ...values }) => {
     let newStocks = values.Stocks
       ? values.Stocks.filter((x) => x.ParentID !== 0).map((x) => ({
           ...x,
@@ -79,6 +152,7 @@ const AuthProvider = ({ children }) => {
     setAuth(User)
     setAccessToken(token)
     setStocks(newStocks)
+    setRightTree(rightTree)
 
     if (index > -1) {
       setCrStocks(newStocks[index])
@@ -92,6 +166,7 @@ const AuthProvider = ({ children }) => {
         accessToken,
         CrStocks,
         Stocks,
+        RightTree,
         saveAuth
       }}
     >

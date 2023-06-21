@@ -11,6 +11,7 @@ import { useMutation, useQueryClient } from 'react-query'
 import CalendarAPI from 'src/app/_ezs/api/calendar.api'
 import TelesalesAPI from 'src/app/_ezs/api/telesales.api'
 import { useAuth } from 'src/app/_ezs/core/Auth'
+import { useRoles } from 'src/app/_ezs/hooks/useRoles'
 import { Button } from 'src/app/_ezs/partials/button'
 import { InputTextarea } from 'src/app/_ezs/partials/forms'
 import { InputDatePicker } from 'src/app/_ezs/partials/forms/input/InputDatePicker'
@@ -21,7 +22,9 @@ function PickerBooking({ children, rowData, isAddMode }) {
   const [visible, setVisible] = useState(false)
   const queryClient = useQueryClient()
 
-  const { control, handleSubmit, reset } = useForm({
+  const { page_tele_basic, page_tele_adv } = useRoles(['page_tele_basic', 'page_tele_adv'])
+
+  const { control, handleSubmit, reset, watch } = useForm({
     defaultValues: {
       MemberID: rowData?.MemberID,
       RootIdS: '',
@@ -32,6 +35,8 @@ function PickerBooking({ children, rowData, isAddMode }) {
       AtHome: false
     }
   })
+
+  const watchStockID = watch("StockID", false);
 
   useEffect(() => {
     if (!isAddMode) {
@@ -87,7 +92,8 @@ function PickerBooking({ children, rowData, isAddMode }) {
           UserServiceIDs: values.UserServiceIDs ? values.UserServiceIDs.toString() : '',
           BookDate: moment(values.BookDate).format('YYYY-MM-DD HH:mm'),
           Status: 'XAC_NHAN',
-          IsAnonymous: false
+          IsAnonymous: false,
+          CreateBy: values.MemberID
         }
       ]
     }
@@ -165,7 +171,7 @@ function PickerBooking({ children, rowData, isAddMode }) {
                                 control={control}
                                 render={({ field: { ref, ...field }, fieldState }) => (
                                   <InputDatePicker
-                                    placeholderText='Chọn ngày'
+                                    placeholderText='Chọn thời gian'
                                     autoComplete='off'
                                     onChange={field.onChange}
                                     selected={field.value ? new Date(field.value) : null}
@@ -188,6 +194,9 @@ function PickerBooking({ children, rowData, isAddMode }) {
                                     className='select-control'
                                     value={field.value}
                                     onChange={(val) => field.onChange(val?.value || '')}
+                                    StockRoles={
+                                      page_tele_adv?.hasRight ? page_tele_adv?.StockRoles : page_tele_basic.StockRoles
+                                    }
                                   />
                                 )}
                               />
@@ -208,6 +217,8 @@ function PickerBooking({ children, rowData, isAddMode }) {
                                     className='select-control'
                                     value={field.value}
                                     onChange={(val) => field.onChange(val ? val.map((x) => x.value) : [])}
+                                    MemberID={rowData?.MemberID}
+                                    StockID={watchStockID}
                                   />
                                 )}
                               />
