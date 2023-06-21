@@ -136,6 +136,7 @@ function SidebarFilter({ defaultValues }) {
                     className='select-control'
                     value={field.value}
                     onChange={(val) => field.onChange(val?.value || '')}
+                    StockRoles={page_tele_adv?.hasRight ? page_tele_adv?.StockRoles : page_tele_basic.StockRoles}
                   />
                 )}
               />

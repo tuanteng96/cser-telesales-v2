@@ -3,7 +3,6 @@ import StaffsAPI from '../../api/staffs.api'
 import { useQuery } from 'react-query'
 
 const SelectStaffs = ({ isMulti, value, loading, disabled, StockRoles, ...props }) => {
-  console.log(StockRoles)
   const { data, isLoading } = useQuery({
     queryKey: ['ListStaffs'],
     queryFn: async () => {

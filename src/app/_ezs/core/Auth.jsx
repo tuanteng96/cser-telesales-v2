@@ -64,17 +64,17 @@ window.top.Info = {
                     Title: 'Cser Hồ Chí Minh',
                     ID: 10053,
                     ParentID: 778
+                  },
+                  {
+                    Title: 'Cser Tuyên Quang',
+                    ID: 11210,
+                    ParentID: 778
+                  },
+                  {
+                    Title: 'CSER NAM HỘI AN',
+                    ID: 11226,
+                    ParentID: 778
                   }
-                  // {
-                  //   Title: 'Cser Tuyên Quang',
-                  //   ID: 11210,
-                  //   ParentID: 778
-                  // },
-                  // {
-                  //   Title: 'CSER NAM HỘI AN',
-                  //   ID: 11226,
-                  //   ParentID: 778
-                  // }
                 ]
               },
               {
