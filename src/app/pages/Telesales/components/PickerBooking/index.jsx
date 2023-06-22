@@ -36,7 +36,7 @@ function PickerBooking({ children, rowData, isAddMode }) {
     }
   })
 
-  const watchStockID = watch("StockID", false);
+  const watchStockID = watch('StockID', false)
 
   useEffect(() => {
     if (!isAddMode) {
@@ -45,7 +45,7 @@ function PickerBooking({ children, rowData, isAddMode }) {
         ID: rowData?.Book?.ID,
         RootIdS: rowData?.Book?.Roots ? rowData?.Book?.Roots?.map((x) => x.ID) : '',
         Status: rowData?.Book?.Status,
-        BookDate: rowData?.Book?.BookDate,
+        BookDate: rowData?.Book?.BookDate ? new Date(rowData?.Book?.BookDate) : '',
         StockID: rowData?.Book?.StockID,
         Desc: rowData?.Book?.Desc,
         UserServiceIDs: rowData?.Book?.UserServices ? rowData?.Book?.UserServices.map((x) => x.ID) : '',
@@ -67,7 +67,8 @@ function PickerBooking({ children, rowData, isAddMode }) {
             edit: [
               {
                 ...rowData,
-                Book: item
+                Book: item,
+                Status: window?.top?.GlobalConfig?.Admin?.kpiSuccess || rowData.Status
               }
             ]
           }

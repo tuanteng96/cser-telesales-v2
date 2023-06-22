@@ -73,7 +73,7 @@ function StaffEdiTable({ initialValues }) {
         >
           <SelectStaffs
             loading={addMutation.isLoading}
-            disabled={addMutation.isLoading}
+            disabled={!page_tele_adv.hasRight || addMutation.isLoading}
             isClearable
             className='w-full select-control'
             value={value}

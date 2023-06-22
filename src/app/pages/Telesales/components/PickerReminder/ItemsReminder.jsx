@@ -77,7 +77,7 @@ function ItemsReminder({ item, index, rowData }) {
     >
       <div className='mb-2'>
         <span className='pr-1'>Ngày nhắc</span>
-        {moment(item.ReminderDate, 'HH:mm DD-MM-YYYY').format('HH:mm DD-MM-YYYY')}
+        {moment(item.ReminderDate, 'YYYY-MM-DD HH:mm').format('HH:mm DD-MM-YYYY')}
       </div>
       <div className='mb-3.5'>{item.Content}</div>
       <div className='flex justify-between items-center'>

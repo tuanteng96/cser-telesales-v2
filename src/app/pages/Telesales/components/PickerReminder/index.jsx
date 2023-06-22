@@ -56,7 +56,7 @@ function PickerReminder({ children, rowData }) {
     const item = {
       CreateDate: new Date(),
       Content: Content,
-      ReminderDate: moment(ReminderDate).format('HH:mm DD-MM-YYYY'),
+      ReminderDate: moment(ReminderDate).format('YYYY-MM-DD HH:mm'),
       isReminded
     }
     let dataPost = {

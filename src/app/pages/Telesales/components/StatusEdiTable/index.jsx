@@ -1,6 +1,6 @@
 import { useClick, useDismiss, useFloating, useInteractions } from '@floating-ui/react'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation, useQueryClient } from 'react-query'
 import Text from 'react-texty'
 import TelesalesAPI from 'src/app/_ezs/api/telesales.api'
@@ -14,6 +14,7 @@ function StatusEdiTable({ initialValues }) {
 
   useEffect(() => {
     setValue(initialValues?.Status || '')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
 
   const { refs, context } = useFloating({

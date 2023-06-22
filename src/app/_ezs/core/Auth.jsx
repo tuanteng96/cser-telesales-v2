@@ -7,113 +7,115 @@ const useAuth = () => {
   return useContext(AuthContext)
 }
 
-window.top.Info = {
-  User: {
-    ID: 1,
-    FullName: 'Admin System'
-  },
-  Stocks: [
-    {
-      Title: 'Quản lý cơ sở',
-      ID: 778,
-      ParentID: 0
+if (import.meta.env.DEV) {
+  window.top.Info = {
+    User: {
+      ID: 1,
+      FullName: 'Admin System'
     },
-    {
-      Title: 'Cser Hà Nội',
-      ID: 8975,
-      ParentID: 778
-    },
-    {
-      Title: 'Cser Hồ Chí Minh',
-      ID: 10053,
-      ParentID: 778
-    },
-    {
-      Title: 'Cser Tuyên Quang',
-      ID: 11210,
-      ParentID: 778
-    },
-    {
-      Title: 'CSER NAM HỘI AN',
-      ID: 11226,
-      ParentID: 778
-    }
-  ],
-  rightTree: {
-    groups: [
+    Stocks: [
       {
-        group: 'Phần mềm',
-        rights: [
-          {
-            IsAllStock: true,
-            hasRight: true,
-            name: 'tele',
-            subs: [
-              {
-                IsAllStock: true,
-                hasRight: true,
-                name: 'page_tele_basic',
-                stocks: '',
-                stocksList: [
-                  {
-                    Title: 'Cser Hà Nội',
-                    ID: 8975,
-                    ParentID: 778
-                  },
-                  {
-                    Title: 'Cser Hồ Chí Minh',
-                    ID: 10053,
-                    ParentID: 778
-                  },
-                  {
-                    Title: 'Cser Tuyên Quang',
-                    ID: 11210,
-                    ParentID: 778
-                  },
-                  {
-                    Title: 'CSER NAM HỘI AN',
-                    ID: 11226,
-                    ParentID: 778
-                  }
-                ]
-              },
-              {
-                IsAllStock: true,
-                hasRight: true,
-                name: 'page_tele_adv',
-                stocks: '',
-                stocksList: [
-                  {
-                    Title: 'Cser Hà Nội',
-                    ID: 8975,
-                    ParentID: 778
-                  },
-                  {
-                    Title: 'Cser Hồ Chí Minh',
-                    ID: 10053,
-                    ParentID: 778
-                  },
-                  {
-                    Title: 'Cser Tuyên Quang',
-                    ID: 11210,
-                    ParentID: 778
-                  },
-                  {
-                    Title: 'CSER NAM HỘI AN',
-                    ID: 11226,
-                    ParentID: 778
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+        Title: 'Quản lý cơ sở',
+        ID: 778,
+        ParentID: 0
+      },
+      {
+        Title: 'Cser Hà Nội',
+        ID: 8975,
+        ParentID: 778
+      },
+      {
+        Title: 'Cser Hồ Chí Minh',
+        ID: 10053,
+        ParentID: 778
+      },
+      {
+        Title: 'Cser Tuyên Quang',
+        ID: 11210,
+        ParentID: 778
+      },
+      {
+        Title: 'CSER NAM HỘI AN',
+        ID: 11226,
+        ParentID: 778
       }
-    ]
-  },
-  CrStockID: 8975,
-  token:
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEwMzExNDEwMzUyOSIsIm5iZiI6MTY4NzMxODk0OSwiZXhwIjoxNjg3OTIzNzQ5LCJpYXQiOjE2ODczMTg5NDl9.QFv2Hjgp7CTyJyH62-kuNuKu_ijtunVf-HHuojtpNj8'
+    ],
+    rightTree: {
+      groups: [
+        {
+          group: 'Phần mềm',
+          rights: [
+            {
+              IsAllStock: true,
+              hasRight: true,
+              name: 'tele',
+              subs: [
+                {
+                  IsAllStock: true,
+                  hasRight: true,
+                  name: 'page_tele_basic',
+                  stocks: '',
+                  stocksList: [
+                    {
+                      Title: 'Cser Hà Nội',
+                      ID: 8975,
+                      ParentID: 778
+                    },
+                    {
+                      Title: 'Cser Hồ Chí Minh',
+                      ID: 10053,
+                      ParentID: 778
+                    },
+                    {
+                      Title: 'Cser Tuyên Quang',
+                      ID: 11210,
+                      ParentID: 778
+                    },
+                    {
+                      Title: 'CSER NAM HỘI AN',
+                      ID: 11226,
+                      ParentID: 778
+                    }
+                  ]
+                },
+                {
+                  IsAllStock: true,
+                  hasRight: true,
+                  name: 'page_tele_adv',
+                  stocks: '',
+                  stocksList: [
+                    {
+                      Title: 'Cser Hà Nội',
+                      ID: 8975,
+                      ParentID: 778
+                    },
+                    {
+                      Title: 'Cser Hồ Chí Minh',
+                      ID: 10053,
+                      ParentID: 778
+                    },
+                    {
+                      Title: 'Cser Tuyên Quang',
+                      ID: 11210,
+                      ParentID: 778
+                    },
+                    {
+                      Title: 'CSER NAM HỘI AN',
+                      ID: 11226,
+                      ParentID: 778
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    CrStockID: 8975,
+    token:
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEwMzExNDEwMzUyOSIsIm5iZiI6MTY4NzMxODk0OSwiZXhwIjoxNjg3OTIzNzQ5LCJpYXQiOjE2ODczMTg5NDl9.QFv2Hjgp7CTyJyH62-kuNuKu_ijtunVf-HHuojtpNj8'
+  }
 }
 
 const getInfoLocalStorage = () => {

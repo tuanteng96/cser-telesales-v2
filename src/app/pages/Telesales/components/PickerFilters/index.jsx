@@ -15,7 +15,7 @@ import { InputDatePicker } from 'src/app/_ezs/partials/forms/input/InputDatePick
 import { SelectStaffs, SelectStatusTelesale, SelectStocks } from 'src/app/_ezs/partials/select'
 
 function PickerFilters({ children, defaultValues }) {
-  const { CrStocks, auth } = useAuth()
+  const { CrStocks } = useAuth()
   const { page_tele_basic, page_tele_adv } = useRoles(['page_tele_basic', 'page_tele_adv'])
 
   const { pathname } = useLocation()
@@ -26,7 +26,13 @@ function PickerFilters({ children, defaultValues }) {
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       ...defaultValues,
-      Tags: defaultValues?.Tags ? defaultValues?.Tags.split(',') : ''
+      Status: defaultValues?.Status ? defaultValues?.Status.split(',') : '',
+      From: defaultValues.From || '',
+      To: defaultValues.To || '',
+      BookFrom: defaultValues.BookFrom ? moment(defaultValues.BookFrom, 'YYYY-MM-DD') : '',
+      BookTo: defaultValues.BookTo ? moment(defaultValues.BookTo, 'YYYY-MM-DD') : '',
+      ReminderFrom: defaultValues.ReminderFrom ? moment(defaultValues.ReminderFrom, 'YYYY-MM-DD') : '',
+      ReminderTo: defaultValues.ReminderTo ? moment(defaultValues.ReminderTo, 'YYYY-MM-DD') : ''
     }
   })
 
@@ -37,7 +43,7 @@ function PickerFilters({ children, defaultValues }) {
   const onSubmit = async (values) => {
     const newQueryConfig = {
       ...values,
-      CurrentUserID: page_tele_adv.hasRight ? values?.CurrentUserID?.value || '' : auth.ID,
+      CurrentUserID: values?.CurrentUserID?.value || '',
       From: values.From ? moment(values.From).format('YYYY-MM-DD') : '',
       To: values.To ? moment(values.To).format('YYYY-MM-DD') : '',
       BookFrom: values.BookFrom ? moment(values.BookFrom).format('YYYY-MM-DD') : '',
@@ -45,7 +51,7 @@ function PickerFilters({ children, defaultValues }) {
       ReminderFrom: values.ReminderFrom ? moment(values.ReminderFrom).format('YYYY-MM-DD') : '',
       ReminderTo: values.ReminderTo ? moment(values.ReminderTo).format('YYYY-MM-DD') : '',
       StockID: values?.StockID || '',
-      Tags: values.Tags ? values?.Tags.join(',') : ''
+      Status: values.Status ? values?.Status.join(',') : ''
     }
     navigate({
       pathname: pathname,
@@ -219,7 +225,7 @@ function PickerFilters({ children, defaultValues }) {
                           <div className='font-light'>Trạng thái</div>
                           <div className='mt-1'>
                             <Controller
-                              name='Tags'
+                              name='Status'
                               control={control}
                               render={({ field: { ref, ...field }, fieldState }) => (
                                 <SelectStatusTelesale
