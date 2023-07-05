@@ -52,7 +52,15 @@ function PickerBooking({ children, rowData, isAddMode }) {
         AtHome: rowData?.Book?.AtHome
       })
     } else {
-      reset()
+      reset({
+        MemberID: rowData?.MemberID,
+        RootIdS: rowData?.ServiceIds ? rowData?.ServiceIds.split(',').map(x => Number(x)) : '',
+        BookDate: new Date(),
+        Desc: '',
+        StockID: CrStocks?.ID,
+        UserServiceIDs: '',
+        AtHome: false
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible])

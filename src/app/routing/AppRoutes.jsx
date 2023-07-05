@@ -7,7 +7,7 @@ const { PUBLIC_URL } = import.meta.env
 
 export default function AppRoutes() {
   const { CrStocks } = useAuth()
-
+  
   return (
     <BrowserRouter basename={PUBLIC_URL}>
       <Routes>

@@ -9,7 +9,7 @@ import * as yup from 'yup'
 import { useAuth } from 'src/app/_ezs/core/Auth'
 import { Button } from 'src/app/_ezs/partials/button'
 import { Input, InputNumber, InputTextarea } from 'src/app/_ezs/partials/forms'
-import { SelectStatusTelesale, SelectStocks } from 'src/app/_ezs/partials/select'
+import { SelectService, SelectStatusTelesale, SelectStocks } from 'src/app/_ezs/partials/select'
 import { useMutation, useQueryClient } from 'react-query'
 import MemberAPI from 'src/app/_ezs/api/member.api'
 import TelesalesAPI from 'src/app/_ezs/api/telesales.api'
@@ -39,7 +39,8 @@ let initialValues = {
   },
   CurrentStockID: 0,
   CurrentUserID: 0,
-  Status: ''
+  Status: '',
+  ServiceIds: ''
 }
 
 function PickerMember({ children, rowData }) {
@@ -115,7 +116,8 @@ function PickerMember({ children, rowData }) {
     let newValues = {
       edit: [
         {
-          ...values
+          ...values,
+          ServiceIds: values.ServiceIds ? values.ServiceIds.join(',') : ''
         }
       ]
     }
@@ -257,6 +259,25 @@ function PickerMember({ children, rowData }) {
                           </div>
                         </div>
                         <div className='mb-3.5'>
+                          <div className='font-light'>Dịch vụ</div>
+                          <div className='mt-1'>
+                            <Controller
+                              name='ServiceIds'
+                              control={control}
+                              render={({ field: { ref, ...field }, fieldState }) => (
+                                <SelectService
+                                  isMulti
+                                  isClearable
+                                  className='select-control'
+                                  value={field.value}
+                                  onChange={(val) => field.onChange(val ? val.map((x) => x.value) : [])}
+                                  MemberID={rowData?.MemberID}
+                                />
+                              )}
+                            />
+                          </div>
+                        </div>
+                        <div className='mb-3.5'>
                           <div className='font-light'>Ghi chú</div>
                           <div className='mt-1'>
                             <Controller
@@ -295,8 +316,8 @@ function PickerMember({ children, rowData }) {
                           Hủy
                         </button>
                         <Button
-                          disabled={addMutation.isLoading}
-                          loading={addMutation.isLoading}
+                          disabled={addMutation.isLoading || createMutation.isLoading}
+                          loading={addMutation.isLoading || createMutation.isLoading}
                           type='submit'
                           className='relative flex items-center h-12 px-5 ml-2 text-white transition rounded shadow-lg bg-primary hover:bg-primaryhv focus:outline-none focus:shadow-none disabled:opacity-70'
                         >
