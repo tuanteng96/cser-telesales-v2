@@ -44,7 +44,7 @@ let initialValues = {
 }
 
 function PickerMember({ children, rowData }) {
-  const { CrStocks } = useAuth()
+  const { CrStocks, auth } = useAuth()
   const [visible, setVisible] = useState(false)
   const queryClient = useQueryClient()
 
@@ -117,7 +117,8 @@ function PickerMember({ children, rowData }) {
       edit: [
         {
           ...values,
-          ServiceIds: values.ServiceIds ? values.ServiceIds.join(',') : ''
+          ServiceIds: values.ServiceIds ? values.ServiceIds.join(',') : '',
+          CurrentUserID: auth?.ID
         }
       ]
     }
