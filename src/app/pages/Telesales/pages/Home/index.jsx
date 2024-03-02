@@ -257,7 +257,7 @@ function Home() {
       <SidebarFilter defaultValues={queryConfig} />
       <div className='flex-1 flex flex-col h-full p-4'>
         <div className='flex items-center justify-between mb-4'>
-          <div className='text-2xl font-bold'>Danh sách khách hàng</div>
+          <div className='text-xl md:text-2xl font-bold'>Danh sách khách hàng</div>
           <div className='flex'>
             <PickerFilters defaultValues={queryConfig}>
               {({ open }) => (
@@ -277,7 +277,7 @@ function Home() {
                 <button
                   onClick={open}
                   type='button'
-                  className='flex items-center justify-center h-12 px-5 ml-2 text-white transition border rounded bg-primary border-primary hover:bg-primaryhv hover:border-primaryhv'
+                  className='flex items-center justify-center h-12 px-2 md:px-5 ml-2 text-white transition border rounded bg-primary border-primary hover:bg-primaryhv hover:border-primaryhv text-[14px] md:text-base'
                 >
                   Thêm mới
                 </button>

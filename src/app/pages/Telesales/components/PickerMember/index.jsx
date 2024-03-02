@@ -176,17 +176,14 @@ function PickerMember({ children, rowData }) {
                   autoComplete='off'
                 >
                   <m.div
-                    className='absolute flex flex-col justify-center h-full py-8'
+                    className='absolute flex flex-col justify-center h-full py-8 max-w-[500px] w-full px-5 md:px-0'
                     initial={{ opacity: 0, top: '60%' }}
                     animate={{ opacity: 1, top: 'auto' }}
                     exit={{ opacity: 0, top: '60%' }}
                   >
-                    <Dialog.Panel
-                      tabIndex={0}
-                      className='bg-white max-w-full w-[500px] max-h-full flex flex-col rounded shadow-lg'
-                    >
+                    <Dialog.Panel tabIndex={0} className='bg-white w-full max-h-full flex flex-col rounded shadow-lg'>
                       <Dialog.Title className='relative flex justify-between px-5 py-5 border-b border-light'>
-                        <div className='text-2xl font-bold'>
+                        <div className='text-xl md:text-2xl font-bold'>
                           {rowData?.ID ? 'Chỉnh sửa khách hàng' : 'Thêm mới khách hàng'}
                         </div>
                         <div

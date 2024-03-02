@@ -102,16 +102,16 @@ function PickerReminder({ children, rowData }) {
                 ></m.div>
                 <div className='fixed inset-0 flex items-center justify-center z-[1003]' autoComplete='off'>
                   <m.div
-                    className='absolute top-0 right-0 flex flex-col justify-center h-full'
+                    className='absolute top-0 right-0 flex flex-col justify-center h-full w-full md:w-[450px]'
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 10 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <Dialog.Panel tabIndex={0} className='bg-white max-w-full w-[450px] h-full flex flex-col shadow-lg'>
+                    <Dialog.Panel tabIndex={0} className='bg-white max-w-full h-full flex flex-col shadow-lg'>
                       <Dialog.Title className='relative flex justify-between px-5 py-5 border-b border-light'>
                         <div>
-                          <div className='text-2xl font-bold'>Lịch nhắc khách hàng</div>
+                          <div className='text-xl md:text-2xl font-bold'>Lịch nhắc khách hàng</div>
                           <div className='mt-px font-medium'>
                             {rowData?.FullName} - {rowData?.Phone}
                           </div>
