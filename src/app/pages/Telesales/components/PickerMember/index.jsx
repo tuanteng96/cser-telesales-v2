@@ -51,7 +51,9 @@ function PickerMember({ children, rowData }) {
   const { page_tele_basic, page_tele_adv } = useRoles(['page_tele_basic', 'page_tele_adv'])
 
   const { control, handleSubmit, reset, setValue } = useForm({
-    defaultValues: rowData ? { ...rowData } : { ...initialValues, CurrentStockID: CrStocks?.ID || '' },
+    defaultValues: rowData
+      ? { ...rowData, ServiceIds: rowData.ServiceIds ? rowData.ServiceIds.split(',').map(x => Number(x)) : [] }
+      : { ...initialValues, CurrentStockID: CrStocks?.ID || '' },
     resolver: yupResolver(SchemaAdd)
   })
 

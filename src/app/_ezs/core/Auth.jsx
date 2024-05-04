@@ -114,7 +114,7 @@ if (import.meta.env.DEV) {
     },
     CrStockID: 8975,
     token:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjU3Mzg1NzkwNTczODYwNjciLCJuYmYiOjE3MDkzNDQzMzksImV4cCI6MTc5NTc0NDMzOSwiaWF0IjoxNzA5MzQ0MzM5fQ._REv45O87thXRMtzqzFGNrpMj41yGYvZ--0prvpQWF8'
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxMDc4OSIsIlRva2VuSWQiOiIzIiwibmJmIjoxNzE0NzkwNzQ2LCJleHAiOjE4MDExOTA3NDYsImlhdCI6MTcxNDc5MDc0Nn0.HhHykPQag6Rb2RunujsAsjchix7DMo9GEb0QOwRx_ss'
   }
 }
 
