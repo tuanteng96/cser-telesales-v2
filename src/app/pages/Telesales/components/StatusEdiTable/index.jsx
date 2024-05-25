@@ -13,7 +13,9 @@ function StatusEdiTable({ initialValues }) {
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    setValue(initialValues?.Status || '')
+    setValue(
+      initialValues?.Status ? initialValues?.Status.split(',') : ''
+    )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
 
@@ -33,13 +35,13 @@ function StatusEdiTable({ initialValues }) {
   })
 
   const onChange = (val) => {
-    setValue(val?.value || '')
+    setValue(val ? val.map((x) => x.value) : '')
 
     let dataPost = {
       edit: [
         {
           ...initialValues,
-          Status: val?.value || ''
+          Status: val ? val.map((x) => x.value).toString() : ''
         }
       ]
     }
@@ -53,7 +55,7 @@ function StatusEdiTable({ initialValues }) {
       }
     })
   }
-
+  
   return (
     <>
       <div className='flex items-center w-full cursor-pointer' ref={refs.setReference} {...getReferenceProps()}>
@@ -69,6 +71,7 @@ function StatusEdiTable({ initialValues }) {
           {...getFloatingProps()}
         >
           <SelectStatusTelesale
+            isMulti
             loading={addMutation.isLoading}
             disabled={addMutation.isLoading}
             isClearable

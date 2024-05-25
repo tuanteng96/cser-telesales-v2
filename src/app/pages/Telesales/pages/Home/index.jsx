@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { AdjustmentsVerticalIcon } from '@heroicons/react/24/solid'
 import ReactBaseTable from 'src/app/_ezs/partials/table'
 import { createSearchParams, useLocation, useNavigate } from 'react-router-dom'
@@ -109,7 +109,7 @@ function Home() {
         title: 'Trạng thái',
         dataKey: 'Status',
         cellRenderer: ({ rowData }) => <StatusEdiTable initialValues={rowData} />,
-        width: 250,
+        width: 350,
         sortable: false
       },
       {
@@ -153,7 +153,7 @@ function Home() {
                   <>
                     <div className='mb-1'>
                       {moment(rowData?.Noti?.List[0].ReminderDate, 'YYYY-MM-DD HH:mm').format('HH:mm DD-MM-YYYY')}
-                      {rowData?.Noti?.List[0].isReminded && <span className='text-success pl-1'>- Đã nhắc</span>}
+                      {rowData?.Noti?.List[0].isReminded && <span className='pl-1 text-success'>- Đã nhắc</span>}
                     </div>
                     <Text tooltipMaxWidth={280} className='w-full truncate'>
                       {rowData?.Noti?.List[0].Content}
@@ -253,11 +253,11 @@ function Home() {
   )
 
   return (
-    <div className='h-full flex'>
+    <div className='flex h-full'>
       <SidebarFilter defaultValues={queryConfig} />
-      <div className='flex-1 flex flex-col h-full p-4'>
+      <div className='flex flex-col flex-1 h-full p-4'>
         <div className='flex items-center justify-between mb-4'>
-          <div className='text-xl md:text-2xl font-bold'>Danh sách khách hàng</div>
+          <div className='text-xl font-bold md:text-2xl'>Danh sách khách hàng</div>
           <div className='flex'>
             <PickerFilters defaultValues={queryConfig}>
               {({ open }) => (
@@ -286,12 +286,13 @@ function Home() {
           </div>
         </div>
         <ReactBaseTable
+          fixed
           pagination
           wrapClassName='grow'
           rowKey='ID'
           columns={columns}
           data={data?.data?.list || []}
-          estimatedRowHeight={96}
+          rowHeight={110}
           isPreviousData={isPreviousData}
           loading={isLoading || isPreviousData}
           pageCount={data?.data?.pcount}

@@ -33,7 +33,7 @@ function SelectStatusTelesale({ value, isMulti, loading, disabled, ...props }) {
       }
     }
   })
-
+  
   return (
     <>
       <Select
