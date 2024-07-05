@@ -129,7 +129,7 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
 
   const onSubmit = async (values) => {
     let Desc = ''
-    if (!window?.top?.GlobalConfig?.APP?.SL_khach && values.AmountPeople) {
+    if (window?.top?.GlobalConfig?.APP?.SL_khach && values.AmountPeople) {
       Desc = (Desc ? Desc + '\n' : '') + `Số lượng khách: ${values.AmountPeople.value}`
     }
     if (values.TagSetting && values.TagSetting.length > 0) {
@@ -324,7 +324,7 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
                               />
                             </div>
                           </div>
-                          {!window?.top?.GlobalConfig?.APP?.SL_khach && (
+                          {window?.top?.GlobalConfig?.APP?.SL_khach && (
                             <div className='mb-2'>
                               <Controller
                                 name='AmountPeople'
