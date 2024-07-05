@@ -20,6 +20,7 @@ import PickerReminder from '../../components/PickerReminder'
 import SidebarFilter from '../../components/SidebarFilter'
 import { useRoles } from 'src/app/_ezs/hooks/useRoles'
 import PickerMember from '../../components/PickerMember'
+import ConfigAPI from 'src/app/_ezs/api/config.api'
 
 function Home() {
   const { pathname } = useLocation()
@@ -63,6 +64,29 @@ function Home() {
       return TelesalesAPI.list(newQueryConfig)
     },
     keepPreviousData: true
+  })
+
+  const SettingCalendar = useQuery({
+    queryKey: ['SettingCalendar'],
+    queryFn: async () => {
+      
+      let { data } = await ConfigAPI.getName(`ArticleRel`)
+      let rs = {
+        Tags: '',
+        OriginalServices: []
+      }
+      if (data?.data && data?.data?.length > 0) {
+        const result = JSON.parse(data?.data[0].Value)
+        if (result) {
+          rs = result
+        }
+      }
+      return rs
+    },
+    initialData: {
+      Tags: '',
+      OriginalServices: []
+    }
   })
 
   const columns = useMemo(
@@ -201,7 +225,18 @@ function Home() {
         title: 'Lịch đặt gần nhất',
         dataKey: 'Book',
         cellRenderer: ({ rowData }) => (
-          <PickerBooking rowData={rowData} isAddMode={!(rowData?.Book?.ID > 0)}>
+          <PickerBooking
+            rowData={rowData}
+            isAddMode={!(rowData?.Book?.ID > 0)}
+            TagsList={
+              SettingCalendar?.data?.Tags
+                ? SettingCalendar?.data?.Tags.split(',').map((x) => ({
+                    label: x,
+                    value: x
+                  }))
+                : []
+            }
+          >
             {({ open }) => (
               <div className='w-full px-[15px] py-[12px] cursor-pointer' onClick={open}>
                 {rowData?.Book?.ID ? (
@@ -234,7 +269,18 @@ function Home() {
         frozen: 'right',
         cellRenderer: ({ rowData }) => (
           <div className='flex justify-center w-full'>
-            <PickerBooking rowData={rowData} isAddMode>
+            <PickerBooking
+              rowData={rowData}
+              isAddMode
+              TagsList={
+                SettingCalendar?.data?.Tags
+                  ? SettingCalendar?.data?.Tags.split(',').map((x) => ({
+                      label: x,
+                      value: x
+                    }))
+                  : []
+              }
+            >
               {({ open }) => (
                 <button
                   className='bg-success hover:bg-successhv text-white mx-[2px] text-sm rounded cursor-pointer px-4 py-3 transition'
@@ -249,7 +295,7 @@ function Home() {
       }
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [SettingCalendar]
   )
 
   return (

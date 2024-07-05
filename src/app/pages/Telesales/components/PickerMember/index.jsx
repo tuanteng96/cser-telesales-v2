@@ -2,7 +2,7 @@ import { FloatingPortal } from '@floating-ui/react'
 import { Dialog } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { AnimatePresence, LayoutGroup, m } from 'framer-motion'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -52,10 +52,29 @@ function PickerMember({ children, rowData }) {
 
   const { control, handleSubmit, reset, setValue } = useForm({
     defaultValues: rowData
-      ? { ...rowData, ServiceIds: rowData.ServiceIds ? rowData.ServiceIds.split(',').map(x => Number(x)) : [] }
+      ? { ...rowData, ServiceIds: rowData.ServiceIds ? rowData.ServiceIds.split(',').map((x) => Number(x)) : [] }
       : { ...initialValues, CurrentStockID: CrStocks?.ID || '' },
     resolver: yupResolver(SchemaAdd)
   })
+
+  useEffect(() => {
+    if (!visible) {
+      reset({
+        ...initialValues,
+        CurrentStockID: CrStocks?.ID || ''
+      })
+    } else {
+      if (rowData) {
+        reset({ ...rowData, ServiceIds: rowData.ServiceIds ? rowData.ServiceIds.split(',').map((x) => Number(x)) : [] })
+      }
+      else {
+        reset({
+          ...initialValues,
+          CurrentStockID: CrStocks?.ID || ''
+        })
+      }
+    }
+  }, [visible])
 
   const searchMutation = useMutation({
     mutationFn: (data) => MemberAPI.search(data)
@@ -183,9 +202,9 @@ function PickerMember({ children, rowData }) {
                     animate={{ opacity: 1, top: 'auto' }}
                     exit={{ opacity: 0, top: '60%' }}
                   >
-                    <Dialog.Panel tabIndex={0} className='bg-white w-full max-h-full flex flex-col rounded shadow-lg'>
+                    <Dialog.Panel tabIndex={0} className='flex flex-col w-full max-h-full bg-white rounded shadow-lg'>
                       <Dialog.Title className='relative flex justify-between px-5 py-5 border-b border-light'>
-                        <div className='text-xl md:text-2xl font-bold'>
+                        <div className='text-xl font-bold md:text-2xl'>
                           {rowData?.ID ? 'Chỉnh sửa khách hàng' : 'Thêm mới khách hàng'}
                         </div>
                         <div

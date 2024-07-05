@@ -16,8 +16,9 @@ import { Button } from 'src/app/_ezs/partials/button'
 import { InputTextarea } from 'src/app/_ezs/partials/forms'
 import { InputDatePicker } from 'src/app/_ezs/partials/forms/input/InputDatePicker'
 import { SelectService, SelectStaffsService, SelectStocks } from 'src/app/_ezs/partials/select'
+import Select, { components } from 'react-select'
 
-function PickerBooking({ children, rowData, isAddMode }) {
+function PickerBooking({ children, rowData, isAddMode, TagsList }) {
   const { CrStocks } = useAuth()
   const [visible, setVisible] = useState(false)
   const queryClient = useQueryClient()
@@ -32,7 +33,12 @@ function PickerBooking({ children, rowData, isAddMode }) {
       Desc: '',
       StockID: CrStocks?.ID,
       UserServiceIDs: '',
-      AtHome: false
+      AtHome: false,
+      AmountPeople: {
+        label: "1 khách",
+        value: 1,
+      },
+      TagSetting: "",
     }
   })
 
@@ -40,6 +46,29 @@ function PickerBooking({ children, rowData, isAddMode }) {
 
   useEffect(() => {
     if (!isAddMode) {
+      let newDesc = rowData?.Book?.Desc
+      let AmountPeople = {
+        label: '1 khách',
+        value: 1
+      }
+      let TagSetting = []
+      let descSplit = newDesc.split('\n')
+      for (let i of descSplit) {
+        if (i.includes('Số lượng khách:')) {
+          let SL = Number(i.match(/\d+/)[0])
+          AmountPeople = {
+            label: SL + ' khách',
+            value: SL
+          }
+        }
+        if (i.includes('Tags:')) {
+          let newTagSetting = i.replaceAll('Tags: ', '')
+          TagSetting = newTagSetting.split(',').map((x) => ({ label: x, value: x }))
+        }
+        if (i.includes('Ghi chú:')) {
+          newDesc = i.replaceAll('Ghi chú: ', '')
+        }
+      }
       reset({
         MemberID: rowData?.MemberID,
         ID: rowData?.Book?.ID,
@@ -47,19 +76,26 @@ function PickerBooking({ children, rowData, isAddMode }) {
         Status: rowData?.Book?.Status,
         BookDate: rowData?.Book?.BookDate ? new Date(rowData?.Book?.BookDate) : '',
         StockID: rowData?.Book?.StockID,
-        Desc: rowData?.Book?.Desc,
+        Desc: newDesc,
         UserServiceIDs: rowData?.Book?.UserServices ? rowData?.Book?.UserServices.map((x) => x.ID) : '',
-        AtHome: rowData?.Book?.AtHome
+        AtHome: rowData?.Book?.AtHome,
+        AmountPeople,
+        TagSetting
       })
     } else {
       reset({
         MemberID: rowData?.MemberID,
-        RootIdS: rowData?.ServiceIds ? rowData?.ServiceIds.split(',').map(x => Number(x)) : '',
+        RootIdS: rowData?.ServiceIds ? rowData?.ServiceIds.split(',').map((x) => Number(x)) : '',
         BookDate: new Date(),
         Desc: '',
         StockID: CrStocks?.ID,
         UserServiceIDs: '',
-        AtHome: false
+        AtHome: false,
+        AmountPeople: {
+          label: "1 khách",
+          value: 1,
+        },
+        TagSetting: "",
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -92,6 +128,15 @@ function PickerBooking({ children, rowData, isAddMode }) {
   const onHide = () => setVisible(false)
 
   const onSubmit = async (values) => {
+    let Desc = ''
+    if (!window?.top?.GlobalConfig?.APP?.SL_khach && values.AmountPeople) {
+      Desc = (Desc ? Desc + '\n' : '') + `Số lượng khách: ${values.AmountPeople.value}`
+    }
+    if (values.TagSetting && values.TagSetting.length > 0) {
+      Desc = (Desc ? Desc + '\n' : '') + `Tags: ${values.TagSetting.map((x) => x.value).toString()}`
+    }
+    Desc = (Desc ? Desc + '\n' : '') + `Ghi chú: ${values.Desc}`
+
     const dataPost = {
       booking: [
         {
@@ -102,7 +147,8 @@ function PickerBooking({ children, rowData, isAddMode }) {
           BookDate: moment(values.BookDate).format('YYYY-MM-DD HH:mm'),
           Status: 'XAC_NHAN',
           IsAnonymous: false,
-          CreateBy: values.MemberID
+          CreateBy: values.MemberID,
+          Desc
         }
       ]
     }
@@ -149,9 +195,9 @@ function PickerBooking({ children, rowData, isAddMode }) {
                     animate={{ opacity: 1, top: 'auto' }}
                     exit={{ opacity: 0, top: '60%' }}
                   >
-                    <Dialog.Panel tabIndex={0} className='bg-white w-full max-h-full flex flex-col rounded shadow-lg'>
+                    <Dialog.Panel tabIndex={0} className='flex flex-col w-full max-h-full bg-white rounded shadow-lg'>
                       <Dialog.Title className='relative flex justify-between px-5 py-5 border-b border-light'>
-                        <div className='text-xl md:text-2xl font-bold'>
+                        <div className='text-xl font-bold md:text-2xl'>
                           {isAddMode ? 'Đặt lịch dịch vụ' : 'Chỉnh sửa đặt lịch'}
                         </div>
                         <div
@@ -278,6 +324,69 @@ function PickerBooking({ children, rowData, isAddMode }) {
                               />
                             </div>
                           </div>
+                          {!window?.top?.GlobalConfig?.APP?.SL_khach && (
+                            <div className='mb-2'>
+                              <Controller
+                                name='AmountPeople'
+                                control={control}
+                                render={({ field: { ref, ...field }, fieldState }) => (
+                                  <Select
+                                    isClearable
+                                    classNamePrefix='select'
+                                    className='select-control'
+                                    options={Array(10)
+                                      .fill()
+                                      .map((_, x) => ({
+                                        label: x + 1 + ' khách',
+                                        value: x + 1
+                                      }))}
+                                    placeholder='Chọn số khách'
+                                    value={field.value}
+                                    onChange={(value) => field.onChange(value)}
+                                    blurInputOnSelect={true}
+                                    noOptionsMessage={() => 'Không có dữ liệu.'}
+                                    menuPortalTarget={document.body}
+                                    menuPosition='fixed'
+                                    styles={{
+                                      menuPortal: (base) => ({
+                                        ...base,
+                                        zIndex: 9999
+                                      })
+                                    }}
+                                  />
+                                )}
+                              />
+                            </div>
+                          )}
+                          <div className='mb-2'>
+                            <Controller
+                              name='TagSetting'
+                              control={control}
+                              render={({ field: { ref, ...field }, fieldState }) => (
+                                <Select
+                                  isMulti
+                                  isClearable
+                                  classNamePrefix='select'
+                                  className='mt-2 select-control'
+                                  options={TagsList}
+                                  placeholder='Chọn tags'
+                                  value={field.value}
+                                  onChange={(value) => field.onChange(value)}
+                                  blurInputOnSelect={true}
+                                  noOptionsMessage={() => 'Không có dữ liệu.'}
+                                  menuPortalTarget={document.body}
+                                  menuPosition='fixed'
+                                  styles={{
+                                    menuPortal: (base) => ({
+                                      ...base,
+                                      zIndex: 9999
+                                    })
+                                  }}
+                                />
+                              )}
+                            />
+                          </div>
+
                           <div>
                             <Controller
                               name='Desc'

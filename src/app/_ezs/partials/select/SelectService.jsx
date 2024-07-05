@@ -14,7 +14,7 @@ function SelectService({ isMulti, value, loading, disabled, MemberID = '', Stock
       return data?.lst?.map((x) => ({ ...x, label: x.Title, value: x.ID })) || []
     }
   })
-  console.log(value)
+  
   return (
     <>
       <Select
