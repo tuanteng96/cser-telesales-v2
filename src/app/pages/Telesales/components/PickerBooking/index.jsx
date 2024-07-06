@@ -18,6 +18,15 @@ import { InputDatePicker } from 'src/app/_ezs/partials/forms/input/InputDatePick
 import { SelectService, SelectStaffsService, SelectStocks } from 'src/app/_ezs/partials/select'
 import Select, { components } from 'react-select'
 
+window.top.GlobalConfig = {
+  Admin: {
+    kpiCancel: 'Khách hủy',
+    kpiCancelFinish: 'Khách không đến',
+    kpiFinish: 'Khách đến',
+    kpiSuccess: 'Đặt lịch thành công'
+  }
+}
+
 function PickerBooking({ children, rowData, isAddMode, TagsList }) {
   const { CrStocks } = useAuth()
   const [visible, setVisible] = useState(false)
@@ -35,10 +44,10 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
       UserServiceIDs: '',
       AtHome: false,
       AmountPeople: {
-        label: "1 khách",
-        value: 1,
+        label: '1 khách',
+        value: 1
       },
-      TagSetting: "",
+      TagSetting: ''
     }
   })
 
@@ -92,10 +101,10 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
         UserServiceIDs: '',
         AtHome: false,
         AmountPeople: {
-          label: "1 khách",
-          value: 1,
+          label: '1 khách',
+          value: 1
         },
-        TagSetting: "",
+        TagSetting: ''
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -107,12 +116,32 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
         const result = await CalendarAPI.booking(data)
         const item = result?.data?.data?.items ? result?.data?.data?.items[0] : null
         if (item) {
+          let Status = ''
+          if (rowData.Status) {
+            let newStatus = rowData.Status.split(',')
+
+            newStatus = newStatus.filter((x) => {
+              
+              return (
+                x.toUpperCase() !== window?.top?.GlobalConfig?.Admin?.kpiSuccess?.toUpperCase() &&
+                x.toUpperCase() !== window?.top?.GlobalConfig?.Admin?.kpiCancel?.toUpperCase() &&
+                x.toUpperCase() !== window?.top?.GlobalConfig?.Admin?.kpiCancelFinish?.toUpperCase() &&
+                x.toUpperCase() !== window?.top?.GlobalConfig?.Admin?.kpiFinish?.toUpperCase()
+              )
+            })
+            
+            newStatus.push(window?.top?.GlobalConfig?.Admin?.kpiSuccess)
+            
+            Status = newStatus.join(",")
+          } else {
+            Status = window?.top?.GlobalConfig?.Admin?.kpiSuccess
+          }
           let dataUpdate = {
             edit: [
               {
                 ...rowData,
                 Book: item,
-                Status: window?.top?.GlobalConfig?.Admin?.kpiSuccess || rowData.Status
+                Status: Status
               }
             ]
           }
