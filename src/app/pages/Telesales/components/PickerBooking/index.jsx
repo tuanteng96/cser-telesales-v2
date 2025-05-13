@@ -252,6 +252,7 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
                                 control={control}
                                 render={({ field: { ref, ...field }, fieldState }) => (
                                   <InputDatePicker
+                                    minDate={new Date()}
                                     placeholderText='Chọn thời gian'
                                     autoComplete='off'
                                     onChange={field.onChange}
