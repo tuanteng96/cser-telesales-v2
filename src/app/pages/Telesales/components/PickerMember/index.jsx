@@ -52,7 +52,10 @@ function PickerMember({ children, rowData }) {
 
   const { control, handleSubmit, reset, setValue } = useForm({
     defaultValues: rowData
-      ? { ...rowData, ServiceIds: rowData.ServiceIds ? rowData.ServiceIds.split(',').map((x) => Number(x)) : [] }
+      ? {
+          ...rowData,
+          Services: rowData.Services ? rowData.Services.map((x) => ({ ...x, label: x.Title, value: x.ID })) : []
+        }
       : { ...initialValues, CurrentStockID: CrStocks?.ID || '' },
     resolver: yupResolver(SchemaAdd)
   })
@@ -65,9 +68,11 @@ function PickerMember({ children, rowData }) {
       })
     } else {
       if (rowData) {
-        reset({ ...rowData, ServiceIds: rowData.ServiceIds ? rowData.ServiceIds.split(',').map((x) => Number(x)) : [] })
-      }
-      else {
+        reset({
+          ...rowData,
+          Services: rowData.Services ? rowData.Services.map((x) => ({ ...x, label: x.Title, value: x.ID })) : []
+        })
+      } else {
         reset({
           ...initialValues,
           CurrentStockID: CrStocks?.ID || ''
@@ -138,7 +143,7 @@ function PickerMember({ children, rowData }) {
       edit: [
         {
           ...values,
-          ServiceIds: values.ServiceIds ? values.ServiceIds.join(',') : '',
+          ServiceIds: values.ServiceIds ? values.ServiceIds.map((x) => x.value).join(',') : '',
           CurrentUserID: auth?.ID
         }
       ]
@@ -289,7 +294,7 @@ function PickerMember({ children, rowData }) {
                                   isClearable
                                   className='select-control'
                                   value={field.value}
-                                  onChange={(val) => field.onChange(val ? val.map((x) => x.value) : [])}
+                                  onChange={(val) => field.onChange(val)}
                                   MemberID={rowData?.MemberID}
                                 />
                               )}

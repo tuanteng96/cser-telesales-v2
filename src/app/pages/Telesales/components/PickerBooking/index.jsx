@@ -55,6 +55,7 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
 
   useEffect(() => {
     if (!isAddMode) {
+      console.log(rowData?.Book)
       let newDesc = rowData?.Book?.Desc
       let AmountPeople = {
         label: '1 khách',
@@ -79,20 +80,46 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
         }
       }
       reset({
+        Members: {
+          label: rowData?.FullName,
+          value: rowData?.MemberID,
+          ID: rowData?.MemberID,
+          FullName: rowData?.FullName
+        },
         MemberID: rowData?.MemberID,
         ID: rowData?.Book?.ID,
-        RootIdS: rowData?.Book?.Roots ? rowData?.Book?.Roots?.map((x) => x.ID) : '',
+        RootIdS: rowData?.Book?.Roots
+          ? rowData?.Book?.Roots?.map((x) => ({
+              ...x,
+              label: x.Title,
+              value: x.ID
+            }))
+          : '',
         Status: rowData?.Book?.Status,
         BookDate: rowData?.Book?.BookDate ? new Date(rowData?.Book?.BookDate) : '',
         StockID: rowData?.Book?.StockID,
         Desc: newDesc,
-        UserServiceIDs: rowData?.Book?.UserServices ? rowData?.Book?.UserServices.map((x) => x.ID) : '',
+        UserServiceIDs: rowData?.Book?.UserServices
+          ? rowData?.Book?.UserServices.map((x) => ({
+              ...x,
+              label: x.FullName,
+              value: x.ID
+            }))
+          : '',
         AtHome: rowData?.Book?.AtHome,
         AmountPeople,
-        TagSetting
+        TagSetting,
+        TreatmentJson: rowData?.Book?.TreatmentJson ? JSON.parse(rowData?.Book?.TreatmentJson) : '',
+        History: rowData?.Book?.HistoryJSON ? JSON.parse(rowData?.Book?.HistoryJSON) : ''
       })
     } else {
       reset({
+        Members: {
+          label: rowData?.FullName,
+          value: rowData?.MemberID,
+          ID: rowData?.MemberID,
+          FullName: rowData?.FullName
+        },
         MemberID: rowData?.MemberID,
         RootIdS: rowData?.ServiceIds ? rowData?.ServiceIds.split(',').map((x) => Number(x)) : '',
         BookDate: new Date(),
@@ -104,7 +131,9 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
           label: '1 khách',
           value: 1
         },
-        TagSetting: ''
+        TagSetting: '',
+        TreatmentJson: '',
+        History: ''
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -121,7 +150,6 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
             let newStatus = rowData.Status.split(',')
 
             newStatus = newStatus.filter((x) => {
-              
               return (
                 x.toUpperCase() !== window?.top?.GlobalConfig?.Admin?.kpiSuccess?.toUpperCase() &&
                 x.toUpperCase() !== window?.top?.GlobalConfig?.Admin?.kpiCancel?.toUpperCase() &&
@@ -129,10 +157,10 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
                 x.toUpperCase() !== window?.top?.GlobalConfig?.Admin?.kpiFinish?.toUpperCase()
               )
             })
-            
+
             newStatus.push(window?.top?.GlobalConfig?.Admin?.kpiSuccess)
-            
-            Status = newStatus.join(",")
+
+            Status = newStatus.join(',')
           } else {
             Status = window?.top?.GlobalConfig?.Admin?.kpiSuccess
           }
@@ -166,21 +194,60 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
     }
     Desc = (Desc ? Desc + '\n' : '') + `Ghi chú: ${values.Desc}`
 
-    const dataPost = {
-      booking: [
-        {
-          ...values,
-          MemberID: values.MemberID,
-          RootIdS: values.RootIdS ? values.RootIdS.toString() : '',
-          UserServiceIDs: values.UserServiceIDs ? values.UserServiceIDs.toString() : '',
-          BookDate: moment(values.BookDate).format('YYYY-MM-DD HH:mm'),
-          Status: 'XAC_NHAN',
-          IsAnonymous: false,
-          CreateBy: values.MemberID,
-          Desc
-        }
-      ]
+    let objBooking = {
+      ...values,
+      MemberID: values.MemberID,
+      RootIdS: values.RootIdS ? values.RootIdS.map((x) => x.value).toString() : '',
+      UserServiceIDs: values.UserServiceIDs ? values.UserServiceIDs.map((x) => x.value).toString() : '',
+      BookDate: moment(values.BookDate).format('YYYY-MM-DD HH:mm'),
+      Status: 'XAC_NHAN',
+      IsAnonymous: false,
+      CreateBy: values.MemberID,
+      Desc
     }
+
+    let History = {
+      ...(values?.History || {}),
+      Edit: values?.History?.Edit
+        ? [
+            ...values?.History?.Edit,
+            {
+              CreateDate: moment().format('HH:mm DD-MM-YYYY'),
+              Staff: {
+                ID: window?.top?.Info?.User?.ID,
+                FullName: window?.top?.Info?.User?.FullName
+              },
+              Booking: {
+                ...objBooking,
+                UserServices: values.UserServiceIDs,
+                Roots: values.RootIdS
+              },
+              isPageTelesale: true
+            }
+          ]
+        : [
+            {
+              CreateDate: moment().format('HH:mm DD-MM-YYYY'),
+              Staff: {
+                ID: window?.top?.Info?.User?.ID,
+                FullName: window?.top?.Info?.User?.FullName
+              },
+              Booking: {
+                ...objBooking,
+                UserServices: values.UserServiceIDs,
+                Roots: values.RootIdS
+              },
+              isPageTelesale: true
+            }
+          ]
+    }
+
+    objBooking.History = History
+
+    const dataPost = {
+      booking: [objBooking]
+    }
+
     addBookingMutation.mutate(dataPost, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['ListTelesales'] }).then(() => {
@@ -298,7 +365,7 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
                                     isClearable
                                     className='select-control'
                                     value={field.value}
-                                    onChange={(val) => field.onChange(val ? val.map((x) => x.value) : [])}
+                                    onChange={(val) => field.onChange(val)}
                                     MemberID={rowData?.MemberID}
                                     StockID={watchStockID}
                                   />
@@ -348,7 +415,7 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
                                     isClearable
                                     className='select-control'
                                     value={field.value}
-                                    onChange={(val) => field.onChange(val ? val.map((x) => x.value) : [])}
+                                    onChange={(val) => field.onChange(val)}
                                   />
                                 )}
                               />

@@ -14,7 +14,7 @@ function SelectService({ isMulti, value, loading, disabled, MemberID = '', Stock
       return data?.lst?.map((x) => ({ ...x, label: x.Title, value: x.ID })) || []
     }
   })
-  
+
   return (
     <>
       <Select
@@ -31,11 +31,7 @@ function SelectService({ isMulti, value, loading, disabled, MemberID = '', Stock
         menuPortalTarget={document.body}
         classNamePrefix='select'
         options={data || []}
-        value={
-          isMulti
-            ? data?.filter((x) => value && value.some((k) => k === x.value))
-            : data?.filter((x) => x.value === value)
-        }
+        value={value}
         placeholder='Chọn dịch vụ'
         noOptionsMessage={() => 'Không có dịch vụ'}
         {...props}

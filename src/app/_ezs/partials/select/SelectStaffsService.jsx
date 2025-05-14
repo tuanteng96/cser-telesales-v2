@@ -60,11 +60,7 @@ const SelectStaffsService = ({ isMulti, value, loading, disabled, ...props }) =>
         menuPortalTarget={document.body}
         classNamePrefix='select'
         options={data?.nested || []}
-        value={
-          isMulti
-            ? data?.list?.filter((x) => value && value.some((k) => k === x.value))
-            : data?.list?.filter((x) => x.value === value)
-        }
+        value={value}
         placeholder='Chọn nhân viên'
         noOptionsMessage={() => 'Không có nhân viên'}
         {...props}
