@@ -68,9 +68,10 @@ function PickerMember({ children, rowData }) {
       })
     } else {
       if (rowData) {
+        
         reset({
           ...rowData,
-          Services: rowData.Services ? rowData.Services.map((x) => ({ ...x, label: x.Title, value: x.ID })) : []
+          ServiceIds: rowData.Services ? rowData.Services.map((x) => ({ ...x, label: x.Title, value: x.ID })) : []
         })
       } else {
         reset({
