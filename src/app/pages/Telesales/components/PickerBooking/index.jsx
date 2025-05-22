@@ -52,10 +52,9 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
   })
 
   const watchStockID = watch('StockID', false)
-
+  console.log(watch())
   useEffect(() => {
     if (!isAddMode) {
-      console.log(rowData?.Book)
       let newDesc = rowData?.Book?.Desc
       let AmountPeople = {
         label: '1 khách',
@@ -79,6 +78,7 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
           newDesc = i.replaceAll('Ghi chú: ', '')
         }
       }
+
       reset({
         Members: {
           label: rowData?.FullName,
@@ -121,7 +121,7 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
           FullName: rowData?.FullName
         },
         MemberID: rowData?.MemberID,
-        RootIdS: rowData?.ServiceIds ? rowData?.ServiceIds.split(',').map((x) => Number(x)) : '',
+        RootIdS: rowData?.Services ? rowData?.Services.map((x) => ({ ...x, label: x.Title, value: x.ID })) : '',
         BookDate: new Date(),
         Desc: '',
         StockID: CrStocks?.ID,
