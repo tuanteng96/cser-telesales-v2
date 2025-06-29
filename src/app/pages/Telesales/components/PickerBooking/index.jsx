@@ -7,7 +7,7 @@ import moment from 'moment'
 import { useEffect } from 'react'
 import { Fragment, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { useMutation, useQueryClient } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import CalendarAPI from 'src/app/_ezs/api/calendar.api'
 import TelesalesAPI from 'src/app/_ezs/api/telesales.api'
 import { useAuth } from 'src/app/_ezs/core/Auth'
@@ -34,7 +34,7 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
 
   const { page_tele_basic, page_tele_adv } = useRoles(['page_tele_basic', 'page_tele_adv'])
 
-  const { control, handleSubmit, reset, watch } = useForm({
+  const { control, handleSubmit, reset, watch, setValue } = useForm({
     defaultValues: {
       MemberID: rowData?.MemberID,
       RootIdS: '',
@@ -52,7 +52,7 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
   })
 
   const watchStockID = watch('StockID', false)
-  console.log(watch())
+
   useEffect(() => {
     if (!isAddMode) {
       let newDesc = rowData?.Book?.Desc
@@ -138,6 +138,20 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible])
+  
+  const { isLoading } = useQuery({
+    queryKey: ['ListStaffs', { visible }],
+    queryFn: async () => {
+      const { data } = await CalendarAPI.getBookId(rowData?.Book?.ID)
+      return data.books && data.books.length > 0 ? data.books[0] : []
+    },
+    onSuccess: (rs) => {
+      if (rs) {
+        setValue('History', rs?.HistoryJSON ? JSON.parse(rs?.HistoryJSON) : '')
+      }
+    },
+    enabled: visible && !isAddMode
+  })
 
   const addBookingMutation = useMutation({
     mutationFn: async (data) => {
@@ -504,8 +518,8 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
                           Hủy
                         </button>
                         <Button
-                          disabled={addBookingMutation.isLoading}
-                          loading={addBookingMutation.isLoading}
+                          disabled={addBookingMutation.isLoading || isLoading}
+                          loading={addBookingMutation.isLoading || isLoading}
                           type='submit'
                           className='relative flex items-center h-12 px-5 ml-2 text-white transition rounded shadow-lg bg-primary hover:bg-primaryhv focus:outline-none focus:shadow-none disabled:opacity-70'
                         >
