@@ -112,9 +112,9 @@ if (import.meta.env.DEV) {
         }
       ]
     },
-    CrStockID: 11557,
+    CrStockID: 11593,
     token:
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjE5ODExMjAyMjYiLCJuYmYiOjE3NTEwNDI0NDksImV4cCI6MTgzNzQ0MjQ0OSwiaWF0IjoxNzUxMDQyNDQ5fQ.64iAqrW_bAXjxFZ-J2B6-eGiAb97vuDyma-9eKDvdzs'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjE5ODExMjA2NDUiLCJuYmYiOjE3NTYxOTUxMjAsImV4cCI6MTg0MjU5NTEyMCwiaWF0IjoxNzU2MTk1MTIwfQ.qOIVptRhDtSqoNrFmK6apVvw8YkPyiDXzrkbJUOupj4'
   }
 }
 

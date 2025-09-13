@@ -9,7 +9,7 @@ import * as yup from 'yup'
 import { useAuth } from 'src/app/_ezs/core/Auth'
 import { Button } from 'src/app/_ezs/partials/button'
 import { Input, InputNumber, InputTextarea } from 'src/app/_ezs/partials/forms'
-import { SelectService, SelectStatusTelesale, SelectStocks } from 'src/app/_ezs/partials/select'
+import { SelectService, SelectSourceTelesale, SelectStatusTelesale, SelectStocks } from 'src/app/_ezs/partials/select'
 import { useMutation, useQueryClient } from 'react-query'
 import MemberAPI from 'src/app/_ezs/api/member.api'
 import TelesalesAPI from 'src/app/_ezs/api/telesales.api'
@@ -18,7 +18,8 @@ import { useRoles } from 'src/app/_ezs/hooks/useRoles'
 const SchemaAdd = yup
   .object({
     FullName: yup.string().required('Vui lòng nhập họ tên'),
-    Phone: yup.string().required('Vui lòng nhập số điện thoại')
+    Phone: yup.string().required('Vui lòng nhập số điện thoại'),
+    //Source: yup.string().required('Vui lòng chọn nguồn')
   })
   .required()
 
@@ -68,7 +69,6 @@ function PickerMember({ children, rowData }) {
       })
     } else {
       if (rowData) {
-        
         reset({
           ...rowData,
           ServiceIds: rowData.Services ? rowData.Services.map((x) => ({ ...x, label: x.Title, value: x.ID })) : []
@@ -264,6 +264,24 @@ function PickerMember({ children, rowData }) {
                             />
                           </div>
                         </div>
+                        {/* <div className='mb-3.5'>
+                          <div className='font-light'>Nguồn</div>
+                          <div className='mt-1'>
+                            <Controller
+                              name='Source'
+                              control={control}
+                              render={({ field: { ref, ...field }, fieldState }) => (
+                                <SelectSourceTelesale
+                                  isClearable
+                                  className='select-control'
+                                  value={field.value}
+                                  onChange={(val) => field.onChange(val?.value || "")}
+                                  //MemberID={rowData?.MemberID}
+                                />
+                              )}
+                            />
+                          </div>
+                        </div> */}
                         <div className='mb-3.5'>
                           <div className='font-light'>Cơ sở chuyển</div>
                           <div className='mt-1'>

@@ -16,16 +16,27 @@ import { Button } from 'src/app/_ezs/partials/button'
 import { InputTextarea } from 'src/app/_ezs/partials/forms'
 import { InputDatePicker } from 'src/app/_ezs/partials/forms/input/InputDatePicker'
 import { SelectService, SelectStaffsService, SelectStocks } from 'src/app/_ezs/partials/select'
-import Select, { components } from 'react-select'
+import Select from 'react-select'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as Yup from 'yup'
 
-window.top.GlobalConfig = {
-  Admin: {
-    kpiCancel: 'Khách hủy',
-    kpiCancelFinish: 'Khách không đến',
-    kpiFinish: 'Khách đến',
-    kpiSuccess: 'Đặt lịch thành công'
-  }
-}
+// window.top.GlobalConfig = {
+//   Admin: {
+//     kpiCancel: 'Khách hủy',
+//     kpiCancelFinish: 'Khách không đến',
+//     kpiFinish: 'Khách đến',
+//     kpiSuccess: 'Đặt lịch thành công',
+//     dat_lich_tag: true
+//   }
+// }
+
+const SchemaAdd = Yup.object({
+  TagSetting: Yup.array().when([], {
+    is: () => window?.top?.GlobalConfig?.Admin?.dat_lich_tag === true,
+    then: (schema) => schema.min(1, 'Vui lòng chọn Tag'), // .min có sẵn trên array
+    otherwise: (schema) => schema.notRequired()
+  })
+}).required()
 
 function PickerBooking({ children, rowData, isAddMode, TagsList }) {
   const { CrStocks } = useAuth()
@@ -48,7 +59,8 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
         value: 1
       },
       TagSetting: ''
-    }
+    },
+    resolver: yupResolver(SchemaAdd)
   })
 
   const watchStockID = watch('StockID', false)
@@ -138,7 +150,7 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible])
-  
+
   const { isLoading } = useQuery({
     queryKey: ['ListStaffs', { visible }],
     queryFn: async () => {
@@ -478,7 +490,10 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
                                   isMulti
                                   isClearable
                                   classNamePrefix='select'
-                                  className='mt-2 select-control'
+                                  className={clsx(
+                                    'mt-2 select-control',
+                                    fieldState.invalid && fieldState?.error?.message && 'select-control-error'
+                                  )}
                                   options={TagsList}
                                   placeholder='Chọn tags'
                                   value={field.value}
