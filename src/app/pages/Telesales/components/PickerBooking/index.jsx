@@ -229,7 +229,20 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
       Status: 'XAC_NHAN',
       IsAnonymous: false,
       CreateBy: values.MemberID,
-      Desc
+      Desc,
+      InfoMore: {
+        Member: {
+          ID: values.MemberID || '',
+          FullName: rowData?.FullName || '',
+          MobilePhone: rowData?.Phone || ''
+        },
+        Roots: values.RootIdS
+          ? values.RootIdS.map((item) => ({
+              ID: item.value,
+              Title: item.label
+            }))
+          : null
+      }
     }
 
     let History = {
