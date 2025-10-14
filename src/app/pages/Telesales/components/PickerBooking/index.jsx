@@ -27,16 +27,11 @@ import * as Yup from 'yup'
 //     kpiFinish: 'Khách đến',
 //     kpiSuccess: 'Đặt lịch thành công',
 //     dat_lich_tag: true
+//   },
+//   Admin: {
+//     dat_lich_tag: true
 //   }
 // }
-
-const SchemaAdd = Yup.object({
-  TagSetting: Yup.array().when([], {
-    is: () => window?.top?.GlobalConfig?.Admin?.dat_lich_tag === true,
-    then: (schema) => schema.min(1, 'Vui lòng chọn Tag'), // .min có sẵn trên array
-    otherwise: (schema) => schema.notRequired()
-  })
-}).required()
 
 function PickerBooking({ children, rowData, isAddMode, TagsList }) {
   const { CrStocks } = useAuth()
@@ -44,6 +39,16 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
   const queryClient = useQueryClient()
 
   const { page_tele_basic, page_tele_adv } = useRoles(['page_tele_basic', 'page_tele_adv'])
+
+  const SchemaAdd = Yup.object({
+    TagSetting: Yup.mixed().test('tag-required', 'Vui lòng chọn Tag', function (value) {
+      const datLichTag = window?.top?.GlobalConfig?.Admin?.dat_lich_tag
+      if (!datLichTag) return true // ❌ Không yêu cầu nếu dat_lich_tag = false hoặc undefined
+      // ✅ Nếu dat_lich_tag = true → bắt buộc có giá trị (mảng hoặc không rỗng)
+      if (Array.isArray(value)) return value.length > 0
+      return !!value
+    })
+  })
 
   const { control, handleSubmit, reset, watch, setValue } = useForm({
     defaultValues: {
@@ -58,7 +63,7 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
         label: '1 khách',
         value: 1
       },
-      TagSetting: ''
+      TagSetting: []
     },
     resolver: yupResolver(SchemaAdd)
   })
@@ -219,7 +224,6 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
       Desc = (Desc ? Desc + '\n' : '') + `Tags: ${values.TagSetting.map((x) => x.value).toString()}`
     }
     Desc = (Desc ? Desc + '\n' : '') + `Ghi chú: ${values.Desc}`
-
     let objBooking = {
       ...values,
       MemberID: values.MemberID,
@@ -244,7 +248,6 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
           : null
       }
     }
-
     let History = {
       ...(values?.History || {}),
       Edit: values?.History?.Edit
@@ -280,13 +283,10 @@ function PickerBooking({ children, rowData, isAddMode, TagsList }) {
             }
           ]
     }
-
     objBooking.History = History
-
     const dataPost = {
       booking: [objBooking]
     }
-
     addBookingMutation.mutate(dataPost, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['ListTelesales'] }).then(() => {
