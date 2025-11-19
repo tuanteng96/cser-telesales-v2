@@ -21,7 +21,7 @@ if (import.meta.env.DEV) {
       },
       {
         Title: 'Cser Hà Nội',
-        ID: 11541,
+        ID: 11620,
         ParentID: 778
       },
       {
@@ -112,9 +112,14 @@ if (import.meta.env.DEV) {
         }
       ]
     },
-    CrStockID: 11593,
+    CrStockID: 11620,
     token:
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjE5ODExMjA2NDUiLCJuYmYiOjE3NTYxOTUxMjAsImV4cCI6MTg0MjU5NTEyMCwiaWF0IjoxNzU2MTk1MTIwfQ.qOIVptRhDtSqoNrFmK6apVvw8YkPyiDXzrkbJUOupj4'
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjExMjQ2MTAxMDE5MDAwMDEiLCJuYmYiOjE3NjM0NzgxMTUsImV4cCI6MTg0OTg3ODExNSwiaWF0IjoxNzYzNDc4MTE1fQ.Z4XhCFtoSu2qSlndkTvjbHavH2D3r90EaYe-jRGzkgw'
+  }
+  window.top.GlobalConfig = {
+    Admin: {
+      dat_lich_hien_dv_an: true,
+    }
   }
 }
 
