@@ -2,7 +2,7 @@ import { FloatingPortal } from '@floating-ui/react'
 import { Dialog } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { AnimatePresence, LayoutGroup, m } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -18,7 +18,7 @@ import { useRoles } from 'src/app/_ezs/hooks/useRoles'
 const SchemaAdd = yup
   .object({
     FullName: yup.string().required('Vui lòng nhập họ tên'),
-    Phone: yup.string().required('Vui lòng nhập số điện thoại'),
+    Phone: yup.string().required('Vui lòng nhập số điện thoại')
     //Source: yup.string().required('Vui lòng chọn nguồn')
   })
   .required()
@@ -47,11 +47,13 @@ let initialValues = {
 function PickerMember({ children, rowData }) {
   const { CrStocks, auth } = useAuth()
   const [visible, setVisible] = useState(false)
+  const [isSearching, setIsSearching] = useState(false)
   const queryClient = useQueryClient()
+  const checkPhoneTimerRef = useRef(null)
 
   const { page_tele_basic, page_tele_adv } = useRoles(['page_tele_basic', 'page_tele_adv'])
 
-  const { control, handleSubmit, reset, setValue } = useForm({
+  const { control, handleSubmit, reset, setValue, setError } = useForm({
     defaultValues: rowData
       ? {
           ...rowData,
@@ -81,6 +83,14 @@ function PickerMember({ children, rowData }) {
       }
     }
   }, [visible])
+
+  useEffect(() => {
+    return () => {
+      if (checkPhoneTimerRef.current) {
+        clearTimeout(checkPhoneTimerRef.current)
+      }
+    }
+  }, [])
 
   const searchMutation = useMutation({
     mutationFn: (data) => MemberAPI.search(data)
@@ -127,12 +137,30 @@ function PickerMember({ children, rowData }) {
               }
             })
           }
+          setIsSearching(false)
         },
         onError: (error) => {
           console.log(error)
+          setIsSearching(false)
         }
       }
     )
+  }
+
+  const debouncedCheckPhone = (value) => {
+    if (checkPhoneTimerRef.current) {
+      clearTimeout(checkPhoneTimerRef.current)
+    }
+    if (!value) {
+      setIsSearching(false)
+      return
+    }
+    setIsSearching(true)
+    checkPhoneTimerRef.current = setTimeout(() => {
+      if (value) {
+        checkPhone(value)
+      }
+    }, 350)
   }
 
   const onHide = () => {
@@ -154,10 +182,22 @@ function PickerMember({ children, rowData }) {
         member: {
           MobilePhone: values.Phone,
           FullName: values.FullName,
-          IsAff: 1
+          IsAff: 1,
+          "IsNoValidPhone": !window?.top?.GlobalConfig?.Admin?.valid_phone,
         }
       }
       let { data } = await createMutation.mutateAsync(dataCreate)
+      if (data?.error) {
+        if (data?.error === 'Chưa nhập Số điện thoại hoặc sai định dạng') {
+          setError('Phone', {
+            type: 'Server',
+            message: 'Số điện thoại không hợp lệ hoặc sai định dạng.'
+          })
+        } else {
+          window?.top?.toastr && window?.top?.toastr.error('', 'Lỗi không xác định.', { timeOut: 1500 })
+        }
+        return
+      }
       if (data?.member?.ID) {
         newValues.edit[0].MemberID = data?.member?.ID
       }
@@ -230,13 +270,14 @@ function PickerMember({ children, rowData }) {
                               render={({ field: { ref, ...field }, fieldState }) => (
                                 <>
                                   <InputNumber
-                                    loading={searchMutation.isLoading}
+                                    loading={isSearching || searchMutation.isLoading}
                                     allowLeadingZeros={true}
                                     placeholder='Nhập số điện thoại'
                                     value={field.value}
                                     onValueChange={(val) => {
-                                      field.onChange(val.value || '')
-                                      checkPhone(val.value || '')
+                                      const nextValue = val.value || ''
+                                      field.onChange(nextValue)
+                                      debouncedCheckPhone(nextValue)
                                     }}
                                     errorMessageForce={fieldState?.invalid}
                                     errorMessage={fieldState?.error?.message}
