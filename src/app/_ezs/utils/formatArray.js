@@ -1,3 +1,5 @@
+import moment from "moment"
+
 export const formatArray = {
   useInfiniteQuery: (page, key = 'data') => {
     let newPages = []
@@ -11,14 +13,14 @@ export const formatArray = {
   },
   findNodeByName: (data, name) => {
     let response = null
-    let findNameItem = tree => {
+    let findNameItem = (tree) => {
       let result = null
       if (tree.name === name) {
         return tree
       }
 
       if (Array.isArray(tree.children) && tree.children.length > 0) {
-        tree.children.some(node => {
+        tree.children.some((node) => {
           result = findNameItem(node)
           return result
         })
@@ -43,5 +45,32 @@ export const formatArray = {
     }
     array.splice(newIndex, 0, array.splice(oldIndex, 1)[0])
     return array
+  },
+  groupByDate: (arr, name = 'BookDate') => {
+    if (!Array.isArray(arr) || !arr.length) return []
+
+    const m = new Map()
+    
+    for (const it of arr) {
+      const dayFull = it?.[name]
+      
+      if (!dayFull) continue
+      const day = dayFull.slice(0, 10) // YYYY-MM-DD
+
+      let g = m.get(day)
+      if (!g) m.set(day, (g = { day, dayFull, items: [] }))
+      else if (dayFull > g.dayFull) g.dayFull = dayFull // lấy dayFull mới nhất trong ngày
+
+      g.items.push(it)
+    }
+
+    const groups = Array.from(m.values())
+
+    for (const g of groups) {
+      g.items.sort((a, b) => moment.utc(b[name]).diff(moment.utc(a[name])))
+    }
+
+    groups.sort((a, b) => moment.utc(b.dayFull).diff(moment.utc(a.dayFull)))
+    return groups
   }
 }

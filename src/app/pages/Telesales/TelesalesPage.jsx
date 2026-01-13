@@ -14,7 +14,8 @@ function TelesalesPage() {
   return (
     <Routes>
       <Route element={<RoleAccess roles={page_tele_basic.hasRight || page_tele_adv.hasRight} />}>
-        <Route index element={<Navigate to={`list${CrStocks?.ID && '?StockID=' + CrStocks?.ID}`} />} />
+        <Route index element={<Navigate to='list' />} />
+        {/* <Route index element={<Navigate to={`list${CrStocks?.ID && '?StockID=' + CrStocks?.ID}`} />} /> */}
         <Route
           path='list'
           element={
@@ -22,7 +23,7 @@ function TelesalesPage() {
               <HomePage />
             </SuspensedView>
           }
-        />
+        ></Route>
       </Route>
     </Routes>
   )

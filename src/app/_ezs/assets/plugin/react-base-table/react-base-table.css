@@ -2,7 +2,7 @@
     --tabel-bs-bg: #ffffff;
     --tabel-bs-bg-header: #f8f8f8;
     --tabel-bs-border-color: #eee;
-    --tabel-bs-bg-row-hover: #f3f3f3;
+    --tabel-bs-bg-row-hover: #fafafa;
 }
 
 html.dark {
@@ -259,6 +259,8 @@ html.dark {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: normal;
+    text-transform: uppercase;
+    font-size: 13px;
 }
 
 .BaseTable__header-row--resizing .BaseTable__header-cell {

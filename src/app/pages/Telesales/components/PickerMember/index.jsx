@@ -9,7 +9,7 @@ import * as yup from 'yup'
 import { useAuth } from 'src/app/_ezs/core/Auth'
 import { Button } from 'src/app/_ezs/partials/button'
 import { Input, InputNumber, InputTextarea } from 'src/app/_ezs/partials/forms'
-import { SelectService, SelectSourceTelesale, SelectStatusTelesale, SelectStocks } from 'src/app/_ezs/partials/select'
+import { SelectService, SelectStatusTelesale, SelectStocks } from 'src/app/_ezs/partials/select'
 import { useMutation, useQueryClient } from 'react-query'
 import MemberAPI from 'src/app/_ezs/api/member.api'
 import TelesalesAPI from 'src/app/_ezs/api/telesales.api'
@@ -101,7 +101,12 @@ function PickerMember({ children, rowData }) {
   })
 
   const addMutation = useMutation({
-    mutationFn: (data) => TelesalesAPI.addMember(data)
+    mutationFn: async (data) => {
+      let rs = await TelesalesAPI.addMember(data)
+      await queryClient.invalidateQueries({ queryKey: ['ListTelesales'] })
+      await queryClient.invalidateQueries({ queryKey: ['customer-details'] })
+      return rs
+    }
   })
 
   const checkPhone = (value) => {
@@ -183,7 +188,7 @@ function PickerMember({ children, rowData }) {
           MobilePhone: values.Phone,
           FullName: values.FullName,
           IsAff: 1,
-          "IsNoValidPhone": !window?.top?.GlobalConfig?.Admin?.valid_phone,
+          IsNoValidPhone: !window?.top?.GlobalConfig?.Admin?.valid_phone
         }
       }
       let { data } = await createMutation.mutateAsync(dataCreate)
@@ -205,14 +210,12 @@ function PickerMember({ children, rowData }) {
 
     addMutation.mutate(newValues, {
       onSuccess: (data) => {
-        queryClient.invalidateQueries({ queryKey: ['ListTelesales'] }).then(() => {
-          onHide()
-          reset({ ...initialValues, CurrentStockID: CrStocks?.ID || '' })
-          window.top?.toastr &&
-            window.top?.toastr.success(values?.ID ? 'Lưu thay đổi thành công' : 'Thêm mới thành công.', '', {
-              timeOut: 1500
-            })
-        })
+        onHide()
+        reset({ ...initialValues, CurrentStockID: CrStocks?.ID || '' })
+        window.top?.toastr &&
+          window.top?.toastr.success(values?.ID ? 'Lưu thay đổi thành công' : 'Thêm mới thành công.', '', {
+            timeOut: 1500
+          })
       },
       onError: (error) => {
         console.log(error)
