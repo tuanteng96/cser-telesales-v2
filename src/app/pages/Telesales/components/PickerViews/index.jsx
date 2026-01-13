@@ -47,194 +47,219 @@ function PickerViews({ children, rowData }) {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  <div className='flex h-full gap-5 p-4'>
-                    <div className='w-[300px]'>
-                      <div className='flex flex-col h-full bg-white rounded shadow'>
-                        <div
-                          className='flex gap-3 p-4 font-semibold uppercase border-b cursor-pointer'
-                          onClick={onHide}
+                  {CustomerDetails?.isLoading && (
+                    <div className='flex items-center justify-center w-full h-full'>
+                      <div role='status'>
+                        <svg
+                          aria-hidden='true'
+                          className='w-10 text-gray-300 animate-spin fill-primary'
+                          viewBox='0 0 100 101'
+                          fill='none'
+                          xmlns='http://www.w3.org/2000/svg'
                         >
-                          <ArrowLeftIcon className='w-6 h-6' />
-                          Thông tin khách hàng
-                        </div>
-                        <div className='overflow-auto grow'>
-                          <div>
-                            <div className='flex items-center gap-4 p-4'>
-                              <div className='relative w-12 h-12 overflow-hidden bg-gray-400 rounded-full'>
-                                <svg
-                                  fill='currentColor'
-                                  viewBox='0 0 20 20'
-                                  xmlns='http://www.w3.org/2000/svg'
-                                  className='absolute text-white w-14 h-14 -left-1'
-                                >
-                                  <path
-                                    fillRule='evenodd'
-                                    d='M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z'
-                                    clipRule='evenodd'
-                                  />
-                                </svg>
-                              </div>
-                              <div>
-                                <div className='font-semibold'>{CustomerDetails.data?.member?.FullName}</div>
-                                <div className='font-number text-[15px] font-medium leading-4 mt-1'>
-                                  {CustomerDetails.data?.member?.MobilePhone}
-                                </div>
-                              </div>
-                            </div>
-                            <div className='px-4'>
-                              <div className='flex justify-between mb-1 last:mb-0'>
-                                <div className='text-gray-500'>Cơ sở</div>
-                                <div className='font-medium'>{CustomerDetails.data?.member?.ByStock?.Title}</div>
-                              </div>
-                              <div className='flex justify-between mb-1 last:mb-0'>
-                                <div className='text-gray-500'>Nhóm</div>
-                                <div className='font-medium'>
-                                  {CustomerDetails.data?.member?.GroupNames || 'Chưa có nhóm'}
-                                </div>
-                              </div>
-                              <div className='flex justify-between mb-1 last:mb-0'>
-                                <div className='text-gray-500'>Ngày sinh nhật</div>
-                                <div className='font-medium'>
-                                  {CustomerDetails.data?.member?.BirthDate
-                                    ? moment(CustomerDetails.data?.member?.BirthDate).format('DD/MM/YYYY')
-                                    : 'Chưa cập nhật'}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className='grid grid-cols-2 gap-3 p-4 mt-4 border-t'>
-                            <div className='bg-[#efefef] rounded text-center py-3.5'>
-                              <div className='text-[13px]'>Ví điện tử</div>
-                              <div className='font-number text-[15px] font-semibold'>
-                                {formatString.formatVND(CustomerDetails.data?.member?.Present?.nap_vi)}
-                              </div>
-                            </div>
-                            <div className='bg-[#efefef] rounded text-center py-3.5'>
-                              <div className='text-[13px]'>Thẻ tiền</div>
-                              <div className='font-number text-[15px] font-semibold'>
-                                {formatString.formatVND(CustomerDetails.data?.member?.Present?.the_tien_kha_dung)}
-                              </div>
-                            </div>
-                            <div className='bg-[#efefef] rounded text-center py-3.5'>
-                              <div className='text-[13px]'>Đã chi tiêu</div>
-                              <div className='font-number text-[15px] font-semibold'>
-                                {formatString.formatVND(CustomerDetails.data?.member?.Present?.da_chi_tieu)}
-                              </div>
-                            </div>
-                            <div className='bg-[#efefef] rounded text-center py-3.5'>
-                              <div className='text-[13px]'>Công nợ</div>
-                              <div className='font-number text-[15px] font-semibold text-danger'>
-                                {formatString.formatVND(CustomerDetails.data?.member?.Present?.no)}
-                              </div>
-                            </div>
-                            <div className='bg-[#efefef] rounded text-center py-3.5 col-span-2'>
-                              <div className='text-[13px]'>Tích điểm</div>
-                              <div className='font-number text-[15px] font-semibold'>
-                                {formatString.formatVND(CustomerDetails.data?.member?.Present?.points)}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className='p-4'>
-                          <PickerMember rowData={rowData}>
-                            {({ open }) => (
-                              <button
-                                onClick={open}
-                                className='flex justify-center w-full gap-2 py-3 font-medium text-white rounded cursor-pointer bg-primary'
-                                type='button'
-                              >
-                                Chỉnh sửa thông tin
-                                <PencilIcon className='w-5' />
-                              </button>
-                            )}
-                          </PickerMember>
-                        </div>
+                          <path
+                            d='M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z'
+                            fill='currentColor'
+                          />
+                          <path
+                            d='M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z'
+                            fill='currentFill'
+                          />
+                        </svg>
+                        <span className='sr-only'>Loading...</span>
                       </div>
                     </div>
-                    <div className='flex-1 h-full'>
-                      <Tab.Group as='div' className='flex flex-col h-full'>
-                        <Tab.List className='flex p-1.5 mb-4 space-x-1.5 bg-[#eceef2] rounded'>
-                          <Tab as={Fragment}>
-                            {({ selected }) => (
-                              <button
-                                className={clsx(
-                                  'w-full rounded py-3 font-number text-[13px] font-semibold leading-5 uppercase cursor-pointer transition-all',
-                                  selected
-                                    ? 'bg-primary text-white shadow'
-                                    : 'bg-[#eceef2] text-[#5b7182] hover:bg-white hover:shadow'
-                                )}
-                              >
-                                Thẻ liệu trình
-                              </button>
-                            )}
-                          </Tab>
-                          <Tab as={Fragment}>
-                            {({ selected }) => (
-                              <button
-                                className={clsx(
-                                  'w-full rounded py-3 font-number text-[13px] font-semibold leading-5 uppercase cursor-pointer transition-all',
-                                  selected
-                                    ? 'bg-primary text-white shadow'
-                                    : 'bg-[#eceef2] text-[#5b7182] hover:bg-white hover:shadow'
-                                )}
-                              >
-                                Sản phẩm sắp hết
-                              </button>
-                            )}
-                          </Tab>
-                          <Tab as={Fragment}>
-                            {({ selected }) => (
-                              <button
-                                className={clsx(
-                                  'w-full rounded py-3 font-number text-[13px] font-semibold leading-5 uppercase cursor-pointer transition-all',
-                                  selected
-                                    ? 'bg-primary text-white shadow'
-                                    : 'bg-[#eceef2] text-[#5b7182] hover:bg-white hover:shadow'
-                                )}
-                              >
-                                Lịch sử mua hàng
-                              </button>
-                            )}
-                          </Tab>
-                          <Tab as={Fragment}>
-                            {({ selected }) => (
-                              <button
-                                className={clsx(
-                                  'w-full rounded py-3 font-number text-[13px] font-semibold leading-5 uppercase cursor-pointer transition-all',
-                                  selected
-                                    ? 'bg-primary text-white shadow'
-                                    : 'bg-[#eceef2] text-[#5b7182] hover:bg-white hover:shadow'
-                                )}
-                              >
-                                Lịch sử sử dụng dịch vụ
-                              </button>
-                            )}
-                          </Tab>
-                        </Tab.List>
-                        <Tab.Panels className='grow'>
-                          <Tab.Panel className='h-full'>
-                            {({ selected }) => (
-                              <TreatmentProgressTab
-                                Prods={CustomerDetails?.data?.prods || []}
-                                isLoading={CustomerDetails?.isLoading}
-                              />
-                            )}
-                          </Tab.Panel>
-                          <Tab.Panel className='h-full'>
-                            {({ selected }) => <LowStockProductTab MemberID={rowData.MemberID} isActive={selected} />}
-                          </Tab.Panel>
-                          <Tab.Panel className='h-full'>
-                            {({ selected }) => <PurchaseHistoryTab MemberID={rowData.MemberID} isActive={selected} />}
-                          </Tab.Panel>
-                          <Tab.Panel className='h-full'>
-                            {({ selected }) => (
-                              <ServiceUsageHistoryTab MemberID={rowData.MemberID} isActive={selected} />
-                            )}
-                          </Tab.Panel>
-                        </Tab.Panels>
-                      </Tab.Group>
+                  )}
+                  {!CustomerDetails?.isLoading && (
+                    <div className='flex h-full gap-5 p-4'>
+                      <div className='w-[300px]'>
+                        <div className='flex flex-col h-full bg-white rounded shadow'>
+                          <div
+                            className='flex gap-3 p-4 font-semibold uppercase border-b cursor-pointer'
+                            onClick={onHide}
+                          >
+                            <ArrowLeftIcon className='w-6 h-6' />
+                            Thông tin khách hàng
+                          </div>
+                          <div className='overflow-auto grow'>
+                            <div>
+                              <div className='flex items-center gap-4 p-4'>
+                                <div className='relative w-12 h-12 overflow-hidden bg-gray-400 rounded-full'>
+                                  <svg
+                                    fill='currentColor'
+                                    viewBox='0 0 20 20'
+                                    xmlns='http://www.w3.org/2000/svg'
+                                    className='absolute text-white w-14 h-14 -left-1'
+                                  >
+                                    <path
+                                      fillRule='evenodd'
+                                      d='M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z'
+                                      clipRule='evenodd'
+                                    />
+                                  </svg>
+                                </div>
+                                <div>
+                                  <div className='font-semibold'>{CustomerDetails.data?.member?.FullName}</div>
+                                  <div className='font-number text-[15px] font-medium leading-4 mt-1'>
+                                    {CustomerDetails.data?.member?.MobilePhone}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className='px-4'>
+                                <div className='flex justify-between mb-1 last:mb-0'>
+                                  <div className='text-gray-500'>Cơ sở</div>
+                                  <div className='font-medium'>{CustomerDetails.data?.member?.ByStock?.Title}</div>
+                                </div>
+                                <div className='flex justify-between mb-1 last:mb-0'>
+                                  <div className='text-gray-500'>Nhóm</div>
+                                  <div className='font-medium'>
+                                    {CustomerDetails.data?.member?.GroupNames || 'Chưa có nhóm'}
+                                  </div>
+                                </div>
+                                <div className='flex justify-between mb-1 last:mb-0'>
+                                  <div className='text-gray-500'>Ngày sinh nhật</div>
+                                  <div className='font-medium'>
+                                    {CustomerDetails.data?.member?.BirthDate
+                                      ? moment(CustomerDetails.data?.member?.BirthDate).format('DD/MM/YYYY')
+                                      : 'Chưa cập nhật'}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className='grid grid-cols-2 gap-3 p-4 mt-4 border-t'>
+                              <div className='bg-[#efefef] rounded text-center py-3.5'>
+                                <div className='text-[13px]'>Ví điện tử</div>
+                                <div className='font-number text-[15px] font-semibold'>
+                                  {formatString.formatVND(CustomerDetails.data?.member?.Present?.nap_vi)}
+                                </div>
+                              </div>
+                              <div className='bg-[#efefef] rounded text-center py-3.5'>
+                                <div className='text-[13px]'>Thẻ tiền</div>
+                                <div className='font-number text-[15px] font-semibold'>
+                                  {formatString.formatVND(CustomerDetails.data?.member?.Present?.the_tien_kha_dung)}
+                                </div>
+                              </div>
+                              <div className='bg-[#efefef] rounded text-center py-3.5'>
+                                <div className='text-[13px]'>Đã chi tiêu</div>
+                                <div className='font-number text-[15px] font-semibold'>
+                                  {formatString.formatVND(CustomerDetails.data?.member?.Present?.da_chi_tieu)}
+                                </div>
+                              </div>
+                              <div className='bg-[#efefef] rounded text-center py-3.5'>
+                                <div className='text-[13px]'>Công nợ</div>
+                                <div className='font-number text-[15px] font-semibold text-danger'>
+                                  {formatString.formatVND(CustomerDetails.data?.member?.Present?.no)}
+                                </div>
+                              </div>
+                              <div className='bg-[#efefef] rounded text-center py-3.5 col-span-2'>
+                                <div className='text-[13px]'>Tích điểm</div>
+                                <div className='font-number text-[15px] font-semibold'>
+                                  {formatString.formatVND(CustomerDetails.data?.member?.Present?.points)}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className='p-4'>
+                            <PickerMember rowData={rowData}>
+                              {({ open }) => (
+                                <button
+                                  onClick={open}
+                                  className='flex justify-center w-full gap-2 py-3 font-medium text-white rounded cursor-pointer bg-primary'
+                                  type='button'
+                                >
+                                  Chỉnh sửa thông tin
+                                  <PencilIcon className='w-5' />
+                                </button>
+                              )}
+                            </PickerMember>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='flex-1 h-full'>
+                        <Tab.Group as='div' className='flex flex-col h-full'>
+                          <Tab.List className='flex p-1.5 mb-4 space-x-1.5 bg-[#eceef2] rounded'>
+                            <Tab as={Fragment}>
+                              {({ selected }) => (
+                                <button
+                                  className={clsx(
+                                    'w-full rounded py-3 font-number text-[13px] font-semibold leading-5 uppercase cursor-pointer transition-all',
+                                    selected
+                                      ? 'bg-primary text-white shadow'
+                                      : 'bg-[#eceef2] text-[#5b7182] hover:bg-white hover:shadow'
+                                  )}
+                                >
+                                  Thẻ liệu trình
+                                </button>
+                              )}
+                            </Tab>
+                            <Tab as={Fragment}>
+                              {({ selected }) => (
+                                <button
+                                  className={clsx(
+                                    'w-full rounded py-3 font-number text-[13px] font-semibold leading-5 uppercase cursor-pointer transition-all',
+                                    selected
+                                      ? 'bg-primary text-white shadow'
+                                      : 'bg-[#eceef2] text-[#5b7182] hover:bg-white hover:shadow'
+                                  )}
+                                >
+                                  Sản phẩm sắp hết
+                                </button>
+                              )}
+                            </Tab>
+                            <Tab as={Fragment}>
+                              {({ selected }) => (
+                                <button
+                                  className={clsx(
+                                    'w-full rounded py-3 font-number text-[13px] font-semibold leading-5 uppercase cursor-pointer transition-all',
+                                    selected
+                                      ? 'bg-primary text-white shadow'
+                                      : 'bg-[#eceef2] text-[#5b7182] hover:bg-white hover:shadow'
+                                  )}
+                                >
+                                  Lịch sử mua hàng
+                                </button>
+                              )}
+                            </Tab>
+                            <Tab as={Fragment}>
+                              {({ selected }) => (
+                                <button
+                                  className={clsx(
+                                    'w-full rounded py-3 font-number text-[13px] font-semibold leading-5 uppercase cursor-pointer transition-all',
+                                    selected
+                                      ? 'bg-primary text-white shadow'
+                                      : 'bg-[#eceef2] text-[#5b7182] hover:bg-white hover:shadow'
+                                  )}
+                                >
+                                  Lịch sử sử dụng dịch vụ
+                                </button>
+                              )}
+                            </Tab>
+                          </Tab.List>
+                          <Tab.Panels className='grow'>
+                            <Tab.Panel className='h-full'>
+                              {({ selected }) => (
+                                <TreatmentProgressTab
+                                  Prods={CustomerDetails?.data?.prods || []}
+                                  isLoading={CustomerDetails?.isLoading}
+                                />
+                              )}
+                            </Tab.Panel>
+                            <Tab.Panel className='h-full'>
+                              {({ selected }) => <LowStockProductTab MemberID={rowData.MemberID} isActive={selected} />}
+                            </Tab.Panel>
+                            <Tab.Panel className='h-full'>
+                              {({ selected }) => <PurchaseHistoryTab MemberID={rowData.MemberID} isActive={selected} />}
+                            </Tab.Panel>
+                            <Tab.Panel className='h-full'>
+                              {({ selected }) => (
+                                <ServiceUsageHistoryTab MemberID={rowData.MemberID} isActive={selected} />
+                              )}
+                            </Tab.Panel>
+                          </Tab.Panels>
+                        </Tab.Group>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </m.div>
               </Dialog>
             </LayoutGroup>
