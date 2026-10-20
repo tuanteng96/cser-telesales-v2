@@ -7,8 +7,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        'sans': ['Be Vietnam Pro', 'sans-serif'],
-        'number': ['Roboto Flex', 'sans-serif'],
+        'sans': ['Inter', 'sans-serif'],
+        'number': ['Inter', 'sans-serif'],
+        'inter': ['Inter', 'sans-serif'],
       },
       colors: {
         "gray": "#7E8299",

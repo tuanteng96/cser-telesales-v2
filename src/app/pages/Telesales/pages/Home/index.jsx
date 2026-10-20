@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
+import { Menu } from '@headlessui/react'
 import { AdjustmentsVerticalIcon } from '@heroicons/react/24/solid'
 import ReactBaseTable from 'src/app/_ezs/partials/table'
 import { createSearchParams, Outlet, useLocation, useNavigate } from 'react-router-dom'
@@ -20,9 +21,10 @@ import PickerReminder from '../../components/PickerReminder'
 import SidebarFilter from '../../components/SidebarFilter'
 import { useRoles } from 'src/app/_ezs/hooks/useRoles'
 import PickerMember from '../../components/PickerMember'
+import PickerSettings from '../../components/PickerSettings'
 import ConfigAPI from 'src/app/_ezs/api/config.api'
 import PickerViews from '../../components/PickerViews'
-import { InformationCircleIcon } from '@heroicons/react/24/outline'
+import { Cog6ToothIcon, InformationCircleIcon } from '@heroicons/react/24/outline'
 
 function Home() {
   const { pathname } = useLocation()
@@ -340,6 +342,38 @@ function Home() {
                   </button>
                 )}
               </PickerMember>
+              <PickerSettings>
+                {({ open }) => (
+                  <Menu as='div' className='relative ml-2 shrink-0'>
+                    <Menu.Button
+                      type='button'
+                      aria-label='Cài đặt Telesales'
+                      title='Cài đặt Telesales'
+                      className='flex items-center justify-center w-12 h-12 transition bg-white border border-[#d5d7da] rounded hover:border-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary'
+                    >
+                      <Cog6ToothIcon className='w-6 h-6' aria-hidden='true' />
+                    </Menu.Button>
+                    <Menu.Items className='absolute right-0 z-[1001] w-60 py-2 mt-2 bg-white border border-[#d5d7da] rounded shadow-lg focus:outline-none'>
+                      {[
+                        { title: 'Trạng thái Telesales', name: 'kqtele' },
+                        { title: 'Tiến trình Telesales', name: 'ttpage' }
+                      ].map(({ title, name }) => (
+                        <Menu.Item key={name}>
+                          {({ active }) => (
+                            <button
+                              type='button'
+                              onClick={() => open({ title, name })}
+                              className={`flex items-center w-full min-h-[44px] px-5 py-3 text-left text-[15px] ${active ? 'bg-[#F4F6FA] text-primary' : ''}`}
+                            >
+                              {title}
+                            </button>
+                          )}
+                        </Menu.Item>
+                      ))}
+                    </Menu.Items>
+                  </Menu>
+                )}
+              </PickerSettings>
             </div>
           </div>
           <ReactBaseTable
