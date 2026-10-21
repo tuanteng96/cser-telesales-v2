@@ -33,7 +33,7 @@ function Home() {
   const { auth, CrStocks } = useAuth()
 
   const { page_tele_adv } = useRoles(['page_tele_adv'])
-
+  console.log(page_tele_adv)
   const queryConfig = {
     pi: queryParams.pi || 1,
     ps: queryParams.ps || 15,
@@ -362,7 +362,16 @@ function Home() {
                           {({ active }) => (
                             <button
                               type='button'
-                              onClick={() => open({ title, name })}
+                              onClick={() => {
+                                if (page_tele_adv?.hasRight && page_tele_adv?.IsStocks) {
+                                  open({ title, name })
+                                } else {
+                                  window.top?.toastr &&
+                                    window.top?.toastr.error('Bạn không có quyền truy cập chức năng này.', '', {
+                                      timeOut: 1500
+                                    })
+                                }
+                              }}
                               className={`flex items-center w-full min-h-[44px] px-5 py-3 text-left text-[15px] ${active ? 'bg-[#F4F6FA] text-primary' : ''}`}
                             >
                               {title}

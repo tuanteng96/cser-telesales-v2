@@ -1,10 +1,9 @@
-import React from 'react'
 import Select from 'react-select'
 import ConfigAPI from '../../api/config.api'
 import { useQuery } from 'react-query'
 
 function SelectStatusTelesale({ value, isMulti, loading, disabled, ...props }) {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isFetching } = useQuery({
     queryKey: ['StatusTelesale'],
     queryFn: async () => {
       const { data } = await ConfigAPI.getName('ttpage')
@@ -38,7 +37,7 @@ function SelectStatusTelesale({ value, isMulti, loading, disabled, ...props }) {
     <>
       <Select
         isMulti={isMulti}
-        isLoading={loading || isLoading}
+        isLoading={loading || isLoading || isFetching}
         isDisabled={disabled || isLoading}
         menuPosition='fixed'
         styles={{

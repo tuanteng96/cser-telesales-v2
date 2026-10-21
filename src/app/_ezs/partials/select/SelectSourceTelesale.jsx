@@ -1,11 +1,10 @@
-import React from 'react'
 import Select from 'react-select'
 import ConfigAPI from '../../api/config.api'
 import { useQuery } from 'react-query'
 
 function SelectSourceTelesale({ value, isMulti, loading, disabled, ...props }) {
   const { data, isLoading } = useQuery({
-    queryKey: ['StatusTelesale'],
+    queryKey: ['SourceTelesale'],
     queryFn: async () => {
       const { data } = await ConfigAPI.getName('MemberSourceConfig')
       let rs = []

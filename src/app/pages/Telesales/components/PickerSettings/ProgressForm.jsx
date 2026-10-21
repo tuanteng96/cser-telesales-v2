@@ -85,9 +85,11 @@ function ProgressForm({ value, onClose }) {
       if (result.data?.error) throw new Error(result.data.error)
       return result
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['TelesalesSettings', 'ttpage'] })
-      queryClient.invalidateQueries({ queryKey: ['StatusTelesale'] })
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['TelesalesSettings', 'ttpage'] }),
+        queryClient.invalidateQueries({ queryKey: ['StatusTelesale'], refetchInactive: true })
+      ])
       window.top?.toastr?.success('Lưu tiến trình Telesales thành công.', '', { timeOut: 1500 })
       onClose()
     },
